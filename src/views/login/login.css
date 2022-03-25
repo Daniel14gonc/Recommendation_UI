@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    
+}
+
+.botonIngresar{
+    background-color:#34800C;
+    display:flex;
+    justify-content: space-around;
+    font-size: 20px;
+    border-radius: 40px;
+
+}
