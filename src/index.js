@@ -3,22 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Login from './login.js';
-import Logon from './routes/logon.js';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+
+
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" exact element={<Login />} />
-      <Route path="/logon" exact element={<Logon />} />
-    </Routes>
-  </BrowserRouter>,
-  document.getElementById('root')
+ <App /> , document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
