@@ -14,7 +14,7 @@ const Login = ({user, setUser}) => {
 
   const navigate = useNavigate();
   const ir = () => {
-    navigate('/logon')
+    navigate('/perfiles')
   }
 
   const getCorreo = (event) => {
@@ -60,7 +60,7 @@ const Login = ({user, setUser}) => {
         <h2 className = "placeholder">Inicia sesión</h2>
           <div className='input-container'>
             <input className = "correo" placeholder="Correo Electronico" onChange ={getCorreo} />
-            <input className = "contrasena" placeholder="Contraseña" onChange ={getPassword} />
+            <input type='password' className = "contrasena" placeholder="Contraseña" onChange ={getPassword} />
             <div className='errorContainer'>
               <p className = "errorMessage">{!valido ? 'Datos inválidos. Intenta de nuevo.' : ''}</p>
             </div>

@@ -1,0 +1,35 @@
+.perfil {
+    background-color: black;
+    height: 150px;
+    width: 150px;
+}
+
+.profileCont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.profileContainer{
+    width: 1000px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.newProf {
+    height: 150px;
+    width: 150px;
+    background-size: 60% 60%;
+    background-repeat: no-repeat;
+    background-image: url('../../assets/plus.png');
+    background-position: 50%;
+}
+
+.newProf:hover{
+    background-color: white;
+}

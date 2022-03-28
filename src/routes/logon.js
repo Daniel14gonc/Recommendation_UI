@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './logon.css'
 const url = 'http://127.0.0.1:5000/api/logon';
 
@@ -11,6 +12,8 @@ const Logon = () => {
 
   const cuenta = useRef(null)
   const message = useRef(null)
+
+  const navigate = useNavigate()
 
   const [button1, setButton1] = useState([false, false, false])
 
@@ -69,6 +72,9 @@ const Logon = () => {
         if (responseJson['message'].includes('error')){
           message.current = 'Correo ya existente.'
           setValid(false)
+        }
+        else{
+          navigate('/perfiles')
         }
         
       }
