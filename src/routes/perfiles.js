@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import './perfiles.css'
+
 
 
 const Perfil = ({ color, nombre, click }) => {
@@ -36,8 +37,7 @@ const EnterProfile = ({ change, create, error, cancel}) => {
     )
 }
 
-const Into_perfil = async(name, setErrorlog) =>{
-    const navigate = useNavigate()
+const into_perfil = async(name, setErrorlog, navigate) =>{
     const user = JSON.parse(window.sessionStorage.getItem('user'))
     const correo = user['correo']
     const url = 'http://127.0.0.1:5000/api/perfiles'
@@ -48,7 +48,8 @@ const Into_perfil = async(name, setErrorlog) =>{
         },
         body: JSON.stringify({
             'correo': correo,
-            'nombre': name.current
+            'nombre': name,
+            'dentro' : 'true'
         })
     })
 
@@ -103,6 +104,7 @@ const postPerfiles = async(name, setError, setNewProfile) => {
 }
 
 const Perfiles = () => {
+    const navigate = useNavigate()
 
     const colors = ['#EA5429', '#9B3BEB', '#3B43EB', '#EBDF2A', '#19E052']
 
@@ -135,8 +137,6 @@ const Perfiles = () => {
         await setProfiles(response)
     }, [newProfile])
 
-    console.log(newProfile)
-
     return (
         <div className = "container">
             {
@@ -148,13 +148,13 @@ const Perfiles = () => {
                             profiles.map((element) => {
                                 const rand = Math.floor(Math.random() * (4))
                                 return(<Perfil color={colors[rand]} nombre={element.nombre} 
-                                    click = {() =>{Into_perfil(element.nombre, setErrorlog)}}/>)
+                                    click = {() =>{into_perfil(element.nombre, setErrorlog, navigate)}}/>)
                             })
                         }
                         <NewProfile clicked = {clicked}/>
                     </div>
-                    <div className='err'>
-                        <p>{setErrorlog}</p>
+                    <div>
+                        <p>{errorlog}</p>
                     </div>
                 </Fragment>
             }
