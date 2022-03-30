@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import './perfiles.css'
 
 
@@ -21,7 +22,7 @@ const NewProfile = ({ clicked }) => {
     )
 }
 
-const EnterProfile = ({ change, create, error, cancel }) => {
+const EnterProfile = ({ change, create, error, cancel}) => {
     return(
         <div className="enterProfile" >
             <h1 className="titleHolder">Añadir perfil</h1>
@@ -33,6 +34,32 @@ const EnterProfile = ({ change, create, error, cancel }) => {
             </div>
         </div>
     )
+}
+
+const Into_perfil = async(name, setErrorlog) =>{
+    const navigate = useNavigate()
+    const user = JSON.parse(window.sessionStorage.getItem('user'))
+    const correo = user['correo']
+    const url = 'http://127.0.0.1:5000/api/perfiles'
+    const response = await fetch(url, {
+        method:'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'correo': correo,
+            'nombre': name.current
+        })
+    })
+
+    const responseJson = await response.json()
+
+    if (responseJson['message'].toUpperCase().includes('ERROR')){
+        setErrorlog(responseJson['message'])
+    }else{
+        navigate('/')
+    }
+
 }
 
 const fetchPerfiles = async() => {
@@ -50,14 +77,39 @@ const fetchPerfiles = async() => {
     return await responseJson
 }
 
+const postPerfiles = async(name, setError, setNewProfile) => {
+    const user = JSON.parse(window.sessionStorage.getItem('user'))
+    const correo = user['correo']
+    const url = 'http://127.0.0.1:5000/api/perfiles'
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+            'correo': correo,
+            'nombre': name.current
+        })
+    })
+
+    const responseJson = await response.json()
+    
+    if (responseJson['message'].toUpperCase().includes('ERROR')){
+        setError(responseJson['message'])
+    }
+    else{
+        setNewProfile(false)
+    }
+}
+
 const Perfiles = () => {
 
-    const user = JSON.parse(window.sessionStorage.getItem('user'))
     const colors = ['#EA5429', '#9B3BEB', '#3B43EB', '#EBDF2A', '#19E052']
 
     const [newProfile, setNewProfile] = useState(false)
     const [profiles, setProfiles] = useState([])
     const [error, setError] = useState(null)
+    const [errorlog, setErrorlog] = useState(null)
 
     const name = useRef(null)
 
@@ -73,13 +125,6 @@ const Perfiles = () => {
         name.current = event.target.value;
     }
 
-    const create = () => {
-        if(name.current !== null && name.current !== ''){
-            console.log(name)
-        } else {
-            setError('Ingresa un nombre para el perfil.')
-        }
-    }
 
     const cancel = () => {
         setNewProfile(false)
@@ -88,14 +133,14 @@ const Perfiles = () => {
     useEffect( async () => {
         const response = await fetchPerfiles()
         await setProfiles(response)
-    }, [])
+    }, [newProfile])
 
     console.log(newProfile)
 
     return (
         <div className = "container">
             {
-                newProfile ? <EnterProfile create={create} change={change} error={error} cancel={cancel}/> :
+                newProfile ? <EnterProfile create={() =>{postPerfiles(name, setError, setNewProfile)}} change={change} error={error} cancel={cancel}/> :
                 <Fragment>
                     <h1>Tus perfiles</h1>
                     <div className='profileContainer'>
@@ -103,10 +148,13 @@ const Perfiles = () => {
                             profiles.map((element) => {
                                 const rand = Math.floor(Math.random() * (4))
                                 return(<Perfil color={colors[rand]} nombre={element.nombre} 
-                                    click = {() => click(element.id_perfil)}/>)
+                                    click = {() =>{Into_perfil(element.nombre, setErrorlog)}}/>)
                             })
                         }
                         <NewProfile clicked = {clicked}/>
+                    </div>
+                    <div className='err'>
+                        <p>{setErrorlog}</p>
                     </div>
                 </Fragment>
             }

@@ -51,7 +51,7 @@ const Login = ({user, setUser}) => {
   }
 
   if(user.isLoggedIn){
-    navigate('/logon')
+    navigate('/perfiles')
   }
 
   return(
