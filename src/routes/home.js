@@ -1,4 +1,24 @@
+import { useState, useEffect } from 'react'
 import './home.css'
+
+
+
+
+
+const fetchSugerido = async() =>{
+  const user  = JSON.parse(window.sessionStorage.getItem('user'))
+  const url = 'http://127.0.0.1:5000/api/sugerencias'
+  const response = await fetch(url, {
+    method:'GET',
+    headers: {
+      'id' : window.sessionStorage.getItem('idperfil')
+    }
+  })
+      
+  const responseJson = await response.json()
+  return await responseJson
+}
+
 
 const Header = () =>{
 
@@ -28,26 +48,25 @@ const Header = () =>{
   )
 }
 
-const Pelicula = () => {
+const Pelicula = ({nombre}) => {
   return (
     <div className='pelicula'>
-
+      <p>{nombre}</p>
     </div>
   )
 }
 
 
-const Carrousel = () => {
+const Carrousel = ({contenido, nombre}) => {
 
-  const temp = ['hola', 'adios', 'si', 'no', 'hola', 'adios', 'si', 'no']
 
   return (
     <div className='carrousel'>
-      <div style={{color:'white', fontSize:'20px'}}>Nombre</div>
+      <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
       <div className='containMovies'>
         {
-          temp.map(() => {
-            return (<Pelicula />)
+          contenido.map((elemento) => {
+            return (<Pelicula nombre = {elemento.nombre}/>)
           })
         }
       </div>
@@ -71,13 +90,21 @@ const BigFilm = ({image}) => {
 
 
 const Home = () =>{
+  const [sugerido, setSugerido] = useState([])
+
+  useEffect( () => { async function sugeridito() { 
+      const response = await fetchSugerido()
+      await setSugerido(response)
+    } 
+    sugeridito()
+  }, [])
 
   return(
     <div className="containerhome">
       <Header />
       <div className='contentFilms'>
         <BigFilm />
-        <Carrousel />
+        <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
       </div>
     </div>
   )
