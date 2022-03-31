@@ -12,7 +12,7 @@ const Header = () =>{
       <div className='userbubble'>
 
       </div>
-      <div className='inputero'>
+      <div className='navegable'>
         
       </div>
       <div className='lupa'>
@@ -35,6 +35,8 @@ const Home = () =>{
 
   return(
     <div className="containerhome">
+
+      <Header/>
       <div className='content'>
         
       </div>

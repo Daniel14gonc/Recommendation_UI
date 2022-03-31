@@ -4,3 +4,49 @@
   width: 100vw;
   height: 100vh;
 }
+
+.headercito{
+  width: 100vw;
+  height: 60px;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userbubble{
+  background-image: url('../../assets/perfil.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 50px;
+  height: 50px;
+}
+
+.navegable{
+  margin-left: 35px;
+  background-color: white;
+  width: 80%;
+  height: 50px;
+}
+
+.lupa{
+  background-image: url('../../assets/lupa.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  margin-left: 35px;
+  width: 30px;
+  height: 30px;
+}
+
+.options{
+  background-image: url('../../assets/lineas.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  margin-left: 35px;
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+}
+
+
+
