@@ -2,16 +2,24 @@
 .containerhome{
   background-color: #05183C;
   width: 100vw;
-  height: 100vh;
+  height: 200vh;
 }
 
 .headercito{
   width: 100vw;
-  height: 60px;
+  height: 90px;
   padding-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(to bottom, #020C1F 30%, #05183C);
+  /*background-color: #03122E;*/
+}
+
+.contentFilms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .userbubble{
@@ -24,9 +32,27 @@
 
 .navegable{
   margin-left: 35px;
-  background-color: white;
   width: 80%;
   height: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+.navegable *{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  color: white;
+}
+
+.navegable *:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.navegable div:nth-child(1){
+  margin-left: 20px;
 }
 
 .lupa{
@@ -34,8 +60,8 @@
   background-size: 100%;
   background-repeat: no-repeat;
   margin-left: 35px;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .options{
@@ -43,10 +69,62 @@
   background-size: 100%;
   background-repeat: no-repeat;
   margin-left: 35px;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   margin-top: 10px;
 }
 
+.superDiv {
+  height: 500px;
+  width: 90%;
+  background: black;
+  display: flex;
+}
 
+.superFilm {
+  background-color: white;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  margin-bottom: 50px;
+  border-radius: 5px;
+  margin-left: 100px;
+  width: 250px;
+  height: 50px;
+}
+
+.play{
+  background: url('../../assets/play.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 30px;
+  height: 30px;
+  background-position: 50%;
+  margin-left: 30px;
+}
+
+.pelicula {
+  height: 150px;
+  width: 250px;
+  background-color: gray;
+  margin: 10px;
+  display: inline-flex;
+}
+
+.carrousel {
+  display: flex;
+  flex-direction: column;
+  height: 225px;
+  align-self: flex-start;
+  margin-left: 75px;
+  margin-top: 50px;
+}
+
+.containMovies{
+  width: 1385px;
+  height: 300px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
