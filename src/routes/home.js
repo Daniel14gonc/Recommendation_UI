@@ -74,11 +74,9 @@ const Home = () =>{
 
   return(
     <div className="containerhome">
-
-      <Header/>
+      <Header />
       <div className='contentFilms'>
         <BigFilm />
-
         <Carrousel />
       </div>
     </div>
