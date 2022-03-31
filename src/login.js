@@ -1,7 +1,7 @@
 import './login.css'
 import { createBrowserHistory as history} from 'history';
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const url = 'http://127.0.0.1:5000/api/signin';
 
@@ -50,9 +50,11 @@ const Login = ({user, setUser}) => {
 
   }
 
-  if(user.isLoggedIn){
-    navigate('/perfiles')
-  }
+  useEffect(() =>{
+    if(user.isLoggedIn){
+      navigate('/perfiles')
+  }}, [])
+  
 
   return(
     <div className = "container">

@@ -58,7 +58,7 @@ const into_perfil = async(name, setErrorlog, navigate) =>{
     if (responseJson['message'].toUpperCase().includes('ERROR')){
         setErrorlog(responseJson['message'])
     }else{
-        navigate('/')
+        navigate('/home')
     }
 
 }

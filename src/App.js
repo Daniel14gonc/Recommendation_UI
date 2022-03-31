@@ -3,6 +3,7 @@ import './App.css';
 import Login from './login.js';
 import Logon from './routes/logon.js'
 import Perfiles from './routes/perfiles';
+import Home from './routes/home';
 import {
   BrowserRouter,
   Routes,
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" exact element={<Login user = {user} setUser={setUser}/>} />
         <Route path="/logon" exact element={<Logon />} />
         <Route path="/perfiles" exact element={<Perfiles />} />
+        <Route path='/home' exact element ={<Home/>}/>
       </Routes>
     </BrowserRouter>
   )
