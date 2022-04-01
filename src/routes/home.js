@@ -2,12 +2,21 @@ import { useState, useEffect } from 'react'
 import './home.css'
 
 
-
-
-
 const fetchSugerido = async() =>{
-  const user  = JSON.parse(window.sessionStorage.getItem('user'))
   const url = 'http://127.0.0.1:5000/api/sugerencias'
+  const response = await fetch(url, {
+    method:'GET',
+    headers: {
+      'id' : window.sessionStorage.getItem('idperfil')
+    }
+  })
+      
+  const responseJson = await response.json()
+  return await responseJson
+}
+
+const fetchVerdenuevo = async() =>{
+  const url = 'http://127.0.0.1:5000/api/verdenuevo'
   const response = await fetch(url, {
     method:'GET',
     headers: {
@@ -48,11 +57,13 @@ const Header = () =>{
   )
 }
 
-const Pelicula = ({nombre}) => {
+const Pelicula = ({nombre, link}) => {
   return (
-    <div className='pelicula'>
-      <p>{nombre}</p>
-    </div>
+    <a href={link} target="_blank" style={{textDecoration:'none'}}>
+      <div className='pelicula'>
+        <p style={{color:'white', fontSize:'20px', alignSelf:'center'}}>{nombre}</p>
+      </div>
+    </a>
   )
 }
 
@@ -66,7 +77,7 @@ const Carrousel = ({contenido, nombre}) => {
       <div className='containMovies'>
         {
           contenido.map((elemento) => {
-            return (<Pelicula nombre = {elemento.nombre}/>)
+            return (<Pelicula nombre = {elemento.nombre} link ={elemento.link}/>)
           })
         }
       </div>
@@ -91,13 +102,20 @@ const BigFilm = ({image}) => {
 
 const Home = () =>{
   const [sugerido, setSugerido] = useState([])
+  const [verdeNuevo, setVerdenuevo] = useState([])
 
   useEffect( () => { async function sugeridito() { 
       const response = await fetchSugerido()
       await setSugerido(response)
+      const response1 = await fetchVerdenuevo()
+      await setVerdenuevo(response1)
     } 
     sugeridito()
   }, [])
+
+  
+
+  console.log(sugerido)
 
   return(
     <div className="containerhome">
@@ -105,6 +123,7 @@ const Home = () =>{
       <div className='contentFilms'>
         <BigFilm />
         <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
+        <Carrousel nombre = 'Ver nuevamente' contenido = {verdeNuevo}/>
       </div>
     </div>
   )

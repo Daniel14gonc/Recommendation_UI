@@ -133,9 +133,11 @@ const Perfiles = () => {
         setNewProfile(false)
     }
 
-    useEffect( async () => {
+    useEffect( () => { async function perfilito() {
         const response = await fetchPerfiles()
         await setProfiles(response)
+    }
+        perfilito()
     }, [newProfile])
 
     return (
