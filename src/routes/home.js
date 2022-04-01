@@ -37,6 +37,19 @@ const fetchVerdenuevo = async() =>{
   return await responseJson
 }
 
+const fetchSeguirV = async() =>{
+  const url = 'http://127.0.0.1:5000/api/seguirviendo'
+  const response = await fetch(url, {
+    method:'GET',
+    headers: {
+      'id' : window.sessionStorage.getItem('idperfil')
+    }
+  })
+      
+  const responseJson = await response.json()
+  return await responseJson
+}
+
 
 const Header = () =>{
 
@@ -96,13 +109,13 @@ const Carrousel = ({contenido, nombre, imagen}) => {
 
 const BigFilm = ({link, image}) => {
   return (
-    <div className='superDiv' style={{backgroundImage:`url(${image})`}}>
-      <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
+    <div className='superDiv' style={{backgroundImage:`url(${image})`, backgroundSize: 'cover', backgroundRepeat:'no-repeat'}}>
         <div className='superFilm'>
-          <div className='play'></div>
-          <div style = {{marginLeft:'30px'}}>Reproducir</div>
+          <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
+            <div className='play'></div>
+            <div style = {{marginLeft:'30px'}}>Reproducir</div>
+          </a>
         </div>
-      </a>
     </div>
   )
 }
@@ -114,6 +127,7 @@ const Home = () =>{
   const [sugerido, setSugerido] = useState([])
   const [verdeNuevo, setVerdenuevo] = useState([])
   const [random, setRandom] = useState([])
+  const [seguirV, setSeguirV] = useState([])
 
   useEffect( () => { async function sugeridito() { 
       const response = await fetchSugerido()
@@ -122,6 +136,8 @@ const Home = () =>{
       await setVerdenuevo(response1)
       const response2 = await fetchRandom()
       await setRandom(response2)
+      const response3 = await fetchSeguirV()
+      await setSeguirV(response3)
     } 
     sugeridito()
   }, [])
@@ -130,7 +146,8 @@ const Home = () =>{
     <div className="containerhome">
       <Header />
       <div className='contentFilms'>
-        <BigFilm image={random.image}/>
+        <BigFilm image={random.imagen} link={random.link}/>
+        <Carrousel nombre = 'Seguir viendo' contenido = {seguirV}/>
         <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
         <Carrousel nombre = 'Ver nuevamente' contenido = {verdeNuevo}/>
       </div>
