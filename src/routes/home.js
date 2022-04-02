@@ -59,6 +59,18 @@ const fetchExplorar = async() =>{
   return await responseJson
 }
 
+const fetchFavoritos = async() =>{
+  const url ='http://127.0.0.1:5000/api/favoritos'
+  const response = await fetch(url, {
+    method:'GET',
+    headers:{
+      'id':window.sessionStorage.getItem('idperfil')
+    }
+  })
+  const responseJson = await response.json()
+  return await responseJson
+}
+
 
 const Header = ({ menu , click }) =>{
   console.log(menu)
@@ -90,10 +102,15 @@ const Header = ({ menu , click }) =>{
 
 const Pelicula = ({link, imagen}) => {
   return (
-    <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
+    
       <div className='pelicula' style={{background:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
+        <div>
+          <button className='favorite' onClick = {() => console.log('justi')}></button>
+        </div>
+        <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
+          <div style = {{width:'250px', height:'100px'}}></div>
+        </a>
       </div>
-    </a>
   )
 }
 
@@ -165,7 +182,8 @@ const Home = () =>{
   const [menu, setMenu] = useState([{nombre:'Inicio', clicked: true}, {nombre:'Explorar', clicked: false}, 
                                       {nombre:'Mi lista', clicked: false}])
   
-  const [explorar, setExplorar] = useState([])                                   
+  const [explorar, setExplorar] = useState([]) 
+  const [favorito, setFavorito] = useState([])                                  
 
   const click = (index) => {
     const oldMenu = [...menu]
@@ -191,9 +209,11 @@ const Home = () =>{
       await setSeguirV(response3)
       const response4 = await fetchExplorar()
       await setExplorar(response4)
+      const response5 = await fetchFavoritos()
+      await setFavorito(response5)
     } 
     sugeridito()
-  }, [])
+  }, [menu])
 
 
 
@@ -218,7 +238,7 @@ const Home = () =>{
         }
         {
           menu[2].clicked && 
-          <MiLista />
+          <MiLista movies = {favorito}/>
         }
         
       </div>
