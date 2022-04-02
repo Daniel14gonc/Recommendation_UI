@@ -11,7 +11,8 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(to bottom, #020C1F 30%, #05183C);
-  /*background-color: #03122E;*/
+  position: fixed;
+  top: 0px;
 }
 
 .contentFilms {
@@ -19,6 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 90px;
 }
 
 .userbubble{
@@ -126,5 +128,12 @@
   height: 300px;
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.explorar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: 80px;
 }
 

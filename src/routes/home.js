@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import './home.css'
 
 
@@ -50,24 +50,33 @@ const fetchSeguirV = async() =>{
   return await responseJson
 }
 
+const fetchExplorar = async() =>{
+  const url ='http://127.0.0.1:5000/api/all-contenido'
+  const response = await fetch(url, {
+    method:'GET',
+  })
+  const responseJson = await response.json()
+  return await responseJson
+}
 
-const Header = () =>{
 
+const Header = ({ menu , click }) =>{
+  console.log(menu)
   return(
     <div className='headercito'>
       <div className='userbubble'>
 
       </div>
       <div className='navegable'>
-        <div>
-          <p>Inicio</p>
-        </div>
-        <div>
-          <p>Explorar</p>
-        </div>
-        <div>
-          <p>Mi lista</p>
-        </div>
+        {
+          menu.map((element, index) => {
+            return(
+              <div>
+                <p onClick={()=> click(index)} style={{fontWeight: element.clicked ?'bold':'normal'}} >{element.nombre}</p>
+              </div>
+            )
+          })
+        }
       </div>
       <div className='lupa'>
 
@@ -88,6 +97,19 @@ const Pelicula = ({link, imagen}) => {
   )
 }
 
+const MiLista = ({ movies }) => {
+  return (
+    <div>
+      {
+        movies ? <Explorar allMovies={movies} /> :
+        <div>
+          <p style={{color:'white'}}>No tienes peliculas en tu lista.</p>
+        </div>
+      }
+    </div>
+  )
+}
+
 
 const Carrousel = ({contenido, nombre, imagen}) => {
 
@@ -105,6 +127,18 @@ const Carrousel = ({contenido, nombre, imagen}) => {
     </div>
   )
 }
+
+const Explorar = ({ allMovies }) => {
+    return (
+      <div className='explorar'>
+        {
+          allMovies.map((element, index) => {
+            return (<Pelicula link={element.link} imagen={element.imagen} />)
+          })
+        }
+      </div>
+    )
+} 
 
 
 const BigFilm = ({link, image}) => {
@@ -128,6 +162,23 @@ const Home = () =>{
   const [verdeNuevo, setVerdenuevo] = useState([])
   const [random, setRandom] = useState([])
   const [seguirV, setSeguirV] = useState([])
+  const [menu, setMenu] = useState([{nombre:'Inicio', clicked: true}, {nombre:'Explorar', clicked: false}, 
+                                      {nombre:'Mi lista', clicked: false}])
+  
+  const [explorar, setExplorar] = useState([])                                   
+
+  const click = (index) => {
+    const oldMenu = [...menu]
+    oldMenu.map((element, i) => {
+      if (i === index){
+        element.clicked = true
+      }
+      else{
+        element.clicked = false
+      }
+    })
+    setMenu(oldMenu)
+  }
 
   useEffect( () => { async function sugeridito() { 
       const response = await fetchSugerido()
@@ -138,18 +189,38 @@ const Home = () =>{
       await setRandom(response2)
       const response3 = await fetchSeguirV()
       await setSeguirV(response3)
+      const response4 = await fetchExplorar()
+      await setExplorar(response4)
     } 
     sugeridito()
   }, [])
 
+
+
+  
+
   return(
     <div className="containerhome">
-      <Header />
+      <Header menu={menu} click={click}/>
       <div className='contentFilms'>
-        <BigFilm image={random.imagen} link={random.link}/>
-        <Carrousel nombre = 'Seguir viendo' contenido = {seguirV}/>
-        <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
-        <Carrousel nombre = 'Ver nuevamente' contenido = {verdeNuevo}/>
+        {
+          menu[0].clicked && 
+          <Fragment>
+            <BigFilm image={random.imagen} link={random.link}/>
+            <Carrousel nombre = 'Seguir viendo' contenido = {seguirV}/>
+            <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
+            <Carrousel nombre = 'Ver nuevamente' contenido = {verdeNuevo}/>
+          </Fragment>
+        }
+        {
+          menu[1].clicked && 
+          <Explorar allMovies={explorar} />
+        }
+        {
+          menu[2].clicked && 
+          <MiLista />
+        }
+        
       </div>
     </div>
   )
