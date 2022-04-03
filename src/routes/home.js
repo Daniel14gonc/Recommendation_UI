@@ -115,7 +115,7 @@ const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion, ad
 const Pelicula = ({nombre, link, imagen, isContent, go }) => {
   const navigate = useNavigate()
   return (
-    <div onClick={() => {goPelicula(link, nombre, navigate, go)}} className='pelicula' style={{backgroundImage:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
+    <div onClick={() => {goPelicula(link, nombre, navigate, go, imagen)}} className='pelicula' style={{backgroundImage:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
       {isContent && <p style={{color:'white'}}>No hay películas aquí :(</p>}        
     </div>
   )
@@ -134,17 +134,18 @@ const MiLista = ({ movies }) => {
   )
 }
 
-const goPelicula = (link, nombre, navigate, go) => {
+const goPelicula = (link, nombre, navigate, go, imagen) => {
   if(go){
     const url ='http://127.0.0.1:5000/api/consumo'
     const response = fetch(url, {
       method:'POST',
       headers: {
         'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
-        'nombre': nombre
+        'contenido': nombre
       }
     })
     window.sessionStorage.setItem('link', link)
+    window.sessionStorage.setItem('pelicula', imagen)
     navigate('/pelicula')
   }
 }
