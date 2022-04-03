@@ -12,8 +12,6 @@ import {
 import { useState } from 'react';
 
 function App() {
-
-
   return (
     <BrowserRouter>
       <Routes>
