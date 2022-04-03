@@ -31,7 +31,7 @@ const fetchVerdenuevo = async() =>{
   const response = await fetch(url, {
     method:'GET',
     headers: {
-      'id' : window.sessionStorage.getItem('idperfil')
+      'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id
     }
   })
       
@@ -44,7 +44,7 @@ const fetchSeguirV = async() =>{
   const response = await fetch(url, {
     method:'GET',
     headers: {
-      'id' : window.sessionStorage.getItem('idperfil')
+      'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id
     }
   })
       
@@ -66,7 +66,7 @@ const fetchFavoritos = async() =>{
   const response = await fetch(url, {
     method:'GET',
     headers:{
-      'id':window.sessionStorage.getItem('idperfil')
+      'id':JSON.parse( window.sessionStorage.getItem('perfil')).id
     }
   })
   const responseJson = await response.json()
@@ -74,7 +74,7 @@ const fetchFavoritos = async() =>{
 }
 
 
-const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion }) =>{
+const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion, adminCuent}) =>{
   const nombre = JSON.parse(window.sessionStorage.getItem('perfil')).nombre
   return(
     <div className='headercito'>
@@ -83,7 +83,7 @@ const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion }) 
         {change && 
         <div className='dropdown'>
           <div className='switch' style={{color:'#4e91dd'}}>{nombre}</div>
-          <div className='switch'>Administrar cuenta</div>
+          <div className='switch' onClick={adminCuent}>Administrar cuenta</div>
           <div className='switch' onClick={switchProfile}>Cambiar perfil</div>
           <div style={{color:'red'}} className='switch' onClick={cerrarSesion}>Cerrar sesión</div>
         </div>
@@ -223,6 +223,11 @@ const Home = () =>{
     setMenu(oldMenu)
   }
 
+  const adminCuent = () =>{
+    navigate('/adminCuenta')
+
+  }
+
   const changeProfile = () => {
     setChange(!change)
   }
@@ -304,7 +309,7 @@ const Home = () =>{
 
   return(
     <div className="containerhome">
-      <Header menu={menu} click={click} change={change} onClick={changeProfile} switchProfile={switchProfile} cerrarSesion={cerrarSesion}/>
+      <Header menu={menu} click={click} change={change} onClick={changeProfile} switchProfile={switchProfile} cerrarSesion={cerrarSesion} adminCuent={adminCuent}/>
       <div className='contentFilms'>
         {
           menu[0].clicked && 
