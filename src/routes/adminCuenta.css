@@ -7,35 +7,59 @@
     align-items: center;
     flex-direction: column;
   }
-  .adCuenta{
-    background-color: #1a6408;
+  .texto{
+    font-size: 35px;
+  }
+  .regreso{
+    background-image: url('../../assets/atras.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
     width: 50px;
     height: 50px;
-    border-radius: 100px;
+    cursor: pointer;
+    margin-left: -750px;
+  }
+  .fondo{
+    background-color: rgb(224, 218, 218);
+    width: 600px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 10px;
+  }
+  .adCuenta{
+    background-color: #1a6408;
+    width: 250px;
+    height: 250px;
+    border-radius: 200px;
+    margin-top: -70px;
   }
   .accountholder{
     display:flex;
     flex-direction: row;
     margin-top: 20px;
     margin-bottom: 30px;
-    width: 320px;
+    width: 550px;
+    height: 100px;
     align-content: space-between;
     align-self: center;
 }
 .acctype{
     display: flex;
-    background-color: white;
+    background-color: rgb(134, 130, 130);
     flex-direction: column;
     margin: 3px;
-    padding:3px;
+    padding:5px;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 25px;
     flex: 1;
 }
 .adConfirmar{
     background-color:white;
     width: 150px;
-    height: 35px;
+    height: 45px;
     border-radius: 15px;
     font-size: 16px;
     cursor: pointer;

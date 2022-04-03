@@ -1,10 +1,22 @@
+import { useNavigate } from 'react-router-dom'
 import './adminCuenta.css'
 
 const AdminCuenta = () => {
+  const navigate = useNavigate()
+
+  const regresoHome = () => {
+    navigate('/home')
+  }
+
+  const cuenta = JSON.parse(window.sessionStorage.getItem('user')).correo
 
     return(
         <div className="containeradCuenta">
-            <div className="adCuenta"/>
+          <div className="regreso" onClick={()=> regresoHome()}/>
+          <div className='fondo'>
+            <div className="adCuenta">
+              <p className="texto">{cuenta}</p>
+            </div>
             <div className='accountholder'>
               <div className='acctype'>
                 <div>
@@ -28,7 +40,8 @@ const AdminCuenta = () => {
                 <a>8 perfiles</a> 
               </div>
             </div>
-            <button className='adConfirmar'/>
+            <button className='adConfirmar'>Aplicar cambios</button>
+          </div>
         </div>
     )
 
