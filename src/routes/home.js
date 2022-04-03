@@ -1,5 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './home.css'
+
 
 
 const fetchSugerido = async() =>{
@@ -72,13 +74,23 @@ const fetchFavoritos = async() =>{
 }
 
 
-const Header = ({ menu , click }) =>{
-  console.log(menu)
+const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion }) =>{
+  const nombre = JSON.parse(window.sessionStorage.getItem('perfil')).nombre
   return(
     <div className='headercito'>
-      <div className='userbubble'>
-
+      <div  style={{marginRight:'10px', display:'flex', justifyContent:'center', alignItems:'center'}}>
+        <div onClick={onClick} className='userbubble'></div>
+        {change && 
+        <div className='dropdown'>
+          <div className='switch' style={{color:'#4e91dd'}}>{nombre}</div>
+          <div className='switch'>Administrar cuenta</div>
+          <div className='switch' onClick={switchProfile}>Cambiar perfil</div>
+          <div style={{color:'red'}} className='switch' onClick={cerrarSesion}>Cerrar sesión</div>
+        </div>
+        }
       </div>
+      
+      
       <div className='navegable'>
         {
           menu.map((element, index) => {
@@ -100,17 +112,15 @@ const Header = ({ menu , click }) =>{
   )
 }
 
-const Pelicula = ({link, imagen}) => {
+const Pelicula = ({link, imagen, isContent}) => {
+
   return (
-    
-      <div className='pelicula' style={{background:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
-        <div>
-          <button className='favorite' onClick = {() => console.log('justi')}></button>
-        </div>
-        <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
-          <div style = {{width:'250px', height:'100px'}}></div>
-        </a>
+
+    <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
+      <div className='pelicula' style={{backgroundImage:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
+        {isContent && <p style={{color:'white'}}>No hay películas aquí :(</p>}        
       </div>
+    </a>
   )
 }
 
@@ -118,9 +128,9 @@ const MiLista = ({ movies }) => {
   return (
     <div>
       {
-        movies ? <Explorar allMovies={movies} /> :
+        movies.length!==0 ? <Explorar allMovies={movies} /> :
         <div>
-          <p style={{color:'white'}}>No tienes peliculas en tu lista.</p>
+          <p style={{color:'white'}}>No tienes peliculas en tu lista...</p>
         </div>
       }
     </div>
@@ -129,20 +139,30 @@ const MiLista = ({ movies }) => {
 
 
 const Carrousel = ({contenido, nombre, imagen}) => {
-
-
-  return (
-    <div className='carrousel'>
-      <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
-      <div className='containMovies'>
-        {
-          contenido.map((elemento) => {
-            return (<Pelicula nombre = {elemento.nombre} link ={elemento.link} imagen = {elemento.imagen}/>)
-          })
-        }
+  console.log(contenido.length)
+  if(contenido.length === 0){
+    return (
+      <div className='carrousel'>
+        <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
+        <div className='containMovies'>
+          <Pelicula imagen = '../../assets/nocontent.png' isContent={'si'}/>
+        </div>
       </div>
-    </div>
-  )
+    )
+  } else {
+    return (
+      <div className='carrousel'>
+        <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
+        <div className='containMovies'>
+          {
+            contenido.map((elemento) => {
+              return (<Pelicula nombre = {elemento.nombre} link ={elemento.link} imagen = {elemento.imagen}/>)
+            })
+          }
+        </div>
+      </div>
+    )
+  }
 }
 
 const Explorar = ({ allMovies }) => {
@@ -175,6 +195,9 @@ const BigFilm = ({link, image}) => {
 
 
 const Home = () =>{
+
+  const navigate = useNavigate()
+
   const [sugerido, setSugerido] = useState([])
   const [verdeNuevo, setVerdenuevo] = useState([])
   const [random, setRandom] = useState([])
@@ -183,7 +206,9 @@ const Home = () =>{
                                       {nombre:'Mi lista', clicked: false}])
   
   const [explorar, setExplorar] = useState([]) 
-  const [favorito, setFavorito] = useState([])                                  
+  const [favorito, setFavorito] = useState([])     
+  const [change, setChange] = useState(false)    
+  const [loading, setLoading] = useState(true)                         
 
   const click = (index) => {
     const oldMenu = [...menu]
@@ -198,7 +223,57 @@ const Home = () =>{
     setMenu(oldMenu)
   }
 
+  const changeProfile = () => {
+    setChange(!change)
+  }
+
+  const switchProfile = async () => {
+
+    const user = JSON.parse(window.sessionStorage.getItem('user'))
+    const profile = JSON.parse(window.sessionStorage.getItem('perfil'))
+    const correo = user['correo']
+    const url = 'http://127.0.0.1:5000/api/perfiles'
+    const response = await fetch(url, {
+        method:'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'correo': correo,
+            'nombre': profile.nombre,
+            'dentro' : 'false'
+        })
+    })
+
+    const responseJson = await response.json()
+    window.sessionStorage.removeItem('perfil')
+    navigate('/perfiles')
+  }
+
+  const cerrarSesion = async() => {
+    const user = JSON.parse(window.sessionStorage.getItem('user'))
+    const profile = JSON.parse(window.sessionStorage.getItem('perfil'))
+    const correo = user['correo']
+    const url = 'http://127.0.0.1:5000/api/perfiles'
+    const response = await fetch(url, {
+        method:'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'correo': correo,
+            'nombre': profile.nombre,
+            'dentro' : 'false'
+        })
+    })
+
+    const responseJson = await response.json()
+    window.sessionStorage.clear()
+    navigate('/')
+  }
+
   useEffect( () => { async function sugeridito() { 
+      
       const response = await fetchSugerido()
       await setSugerido(response)
       const response1 = await fetchVerdenuevo()
@@ -211,17 +286,25 @@ const Home = () =>{
       await setExplorar(response4)
       const response5 = await fetchFavoritos()
       await setFavorito(response5)
+      setLoading(false)
     } 
     sugeridito()
   }, [menu])
 
+  if(loading){
+    return (
+      <div className='container2'>
+        <div className='loading'></div>
+      </div>
+    )
+  }
 
 
   
 
   return(
     <div className="containerhome">
-      <Header menu={menu} click={click}/>
+      <Header menu={menu} click={click} change={change} onClick={changeProfile} switchProfile={switchProfile} cerrarSesion={cerrarSesion}/>
       <div className='contentFilms'>
         {
           menu[0].clicked && 

@@ -58,7 +58,7 @@ const into_perfil = async(name, setErrorlog, navigate) =>{
     if (responseJson['message'].toUpperCase().includes('ERROR')){
         setErrorlog(responseJson['message'])
     }else{
-        window.sessionStorage.setItem('idperfil', responseJson['message'])
+        window.sessionStorage.setItem('perfil', JSON.stringify({id: responseJson['message'], nombre: name}))
         navigate('/home')
     }
 

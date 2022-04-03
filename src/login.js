@@ -6,15 +6,16 @@ import { useEffect, useState } from 'react';
 const url = 'http://127.0.0.1:5000/api/signin';
 
 
-const Login = ({user, setUser}) => {
+const Login = () => {
 
   const[correo, setCorreo] = useState(null)
   const[password, setPassword] = useState(null)
   const [valido, setValido] = useState(true)
 
   const navigate = useNavigate();
-  const ir = () => {
-    navigate('/perfiles')
+  const ir = (ruta) => {
+    console.log(ruta)
+    navigate(ruta)
   }
 
   const getCorreo = (event) => {
@@ -43,17 +44,28 @@ const Login = ({user, setUser}) => {
         isLoggedIn: true,
         correo: correo
       }
-      setUser(use)
       window.sessionStorage.setItem('user', JSON.stringify(use))
-      ir()
+      ir('/perfiles')
     }
 
   }
 
   useEffect(() =>{
-    if(user.isLoggedIn){
-      navigate('/perfiles')
-  }}, [])
+      const usuario = JSON.parse(window.sessionStorage.getItem('user'))
+      if(usuario){
+        if(usuario.isLoggedIn){
+          const perfil = window.sessionStorage.getItem('perfil')
+          if(perfil){
+            console.log('home')
+            navigate('/home')
+          } else {
+            console.log('perfil')
+            navigate('/perfiles')
+          }
+        }
+        
+      }
+    }, [])
   
 
   return(
@@ -69,7 +81,7 @@ const Login = ({user, setUser}) => {
           </div>
           <div className='button-container'>
             <button className = "botonIngresar" onClick={validarRegistro}>Ingresar</button>
-            <button className = "botonRegistro" onClick={ir}>Registrarse</button>
+            <button className = "botonRegistro" onClick={() => ir('/logon')}>Registrarse</button>
           </div>
       </div>
     </div>

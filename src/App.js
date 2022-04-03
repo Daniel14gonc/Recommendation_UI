@@ -13,12 +13,11 @@ import { useState } from 'react';
 
 function App() {
 
-  const [user, setUser] = useState(() => JSON.parse(window.sessionStorage.getItem('user')) || {})
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" exact element={<Login user = {user} setUser={setUser}/>} />
+        <Route path="/" exact element={<Login/>} />
         <Route path="/logon" exact element={<Logon />} />
         <Route path="/perfiles" exact element={<Perfiles />} />
         <Route path='/home' exact element ={<Home/>}/>
