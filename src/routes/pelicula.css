@@ -1,0 +1,13 @@
+.containerPelicula {
+    height: 100vh;
+    width: 100vw;
+    background-color: #05183C;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerPelicula {
+    height: 100px;
+    width: 100%;
+    background-color: black;
+}

@@ -112,15 +112,12 @@ const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion, ad
   )
 }
 
-const Pelicula = ({link, imagen, isContent}) => {
-
+const Pelicula = ({nombre, link, imagen, isContent, go }) => {
+  const navigate = useNavigate()
   return (
-
-    <a href={link} target="_blank" style={{textDecoration:'none'}} rel="noopener noreferrer">
-      <div className='pelicula' style={{backgroundImage:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
-        {isContent && <p style={{color:'white'}}>No hay películas aquí :(</p>}        
-      </div>
-    </a>
+    <div onClick={() => {goPelicula(link, nombre, navigate, go)}} className='pelicula' style={{backgroundImage:`url(${imagen})`, backgroundSize:'cover', backgroundRepeat:'no-repeat'}}>
+      {isContent && <p style={{color:'white'}}>No hay películas aquí :(</p>}        
+    </div>
   )
 }
 
@@ -137,26 +134,45 @@ const MiLista = ({ movies }) => {
   )
 }
 
+const goPelicula = (link, nombre, navigate, go) => {
+  if(go){
+    const url ='http://127.0.0.1:5000/api/consumo'
+    const response = fetch(url, {
+      method:'POST',
+      headers: {
+        'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+        'nombre': nombre
+      }
+    })
+    window.sessionStorage.setItem('link', link)
+    navigate('/pelicula')
+  }
+}
+
 
 const Carrousel = ({contenido, nombre, imagen}) => {
   console.log(contenido.length)
+
+
   if(contenido.length === 0){
+
     return (
       <div className='carrousel'>
         <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
         <div className='containMovies'>
-          <Pelicula imagen = '../../assets/nocontent.png' isContent={'si'}/>
+          <Pelicula go={false} imagen = '../../assets/nocontent.png' isContent={'si'}/>
         </div>
       </div>
     )
   } else {
+
     return (
       <div className='carrousel'>
         <div style={{color:'white', fontSize:'20px'}}>{nombre}</div>
         <div className='containMovies'>
           {
             contenido.map((elemento) => {
-              return (<Pelicula nombre = {elemento.nombre} link ={elemento.link} imagen = {elemento.imagen}/>)
+              return (<Pelicula go={true} nombre = {elemento.nombre} link ={elemento.link} imagen = {elemento.imagen}/>)
             })
           }
         </div>
@@ -170,7 +186,7 @@ const Explorar = ({ allMovies }) => {
       <div className='explorar'>
         {
           allMovies.map((element, index) => {
-            return (<Pelicula link={element.link} imagen={element.imagen} />)
+            return (<Pelicula nombre={element.nombre} link={element.link} imagen={element.imagen} />)
           })
         }
       </div>
