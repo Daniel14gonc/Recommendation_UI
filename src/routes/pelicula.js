@@ -60,7 +60,7 @@ const Pelicula = () => {
     }
 
     const favoritos = async() =>{
-
+        
         if(megust===false){
             const url ='http://127.0.0.1:5000/api/favoritos'
             const todos = await fetch(url,{
@@ -71,9 +71,19 @@ const Pelicula = () => {
             })
 
             const res = await todos.json()
-            const resT = res.filter((elementos)=> {if(elementos.nombre === nombre){setMegust(true)}})
+            fetch(url,{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    'idperfil' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+                    'nombre': nombre
+                })
+            })
+            setMegust(true)
         }
-        else{
+        else {
             const url ='http://127.0.0.1:5000/api/favoritos'
             const todos = await fetch(url,{
                 method:'DELETE',
@@ -85,6 +95,7 @@ const Pelicula = () => {
                     'nombre': nombre
                 })
             })
+            setMegust(false)
         }
         
 

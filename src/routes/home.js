@@ -1,3 +1,4 @@
+import { eventWrapper } from '@testing-library/user-event/dist/utils'
 import { useState, useEffect, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './home.css'
@@ -74,7 +75,7 @@ const fetchFavoritos = async() =>{
 }
 
 
-const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion, adminCuent}) =>{
+const Header = ({ onChange, pelis, buscar, menu , click, change, onClick, switchProfile, cerrarSesion, adminCuent , busqueda}) =>{
   const nombre = JSON.parse(window.sessionStorage.getItem('perfil')).nombre
   return(
     <div className='headercito'>
@@ -102,10 +103,9 @@ const Header = ({ menu , click, change, onClick, switchProfile, cerrarSesion, ad
           })
         }
       </div>
-      <div className='lupa'>
-
-      </div>
-      <div className='options'>
+      {buscar && 
+        <input onChange={onChange} onKeyDown={pelis} className = "busqueda" placeholder="Busca peliculas..." />}
+      <div className='lupa' onClick={busqueda}>
 
       </div>
     </div>
@@ -176,31 +176,50 @@ const Carrousel = ({contenido, nombre, imagen}) => {
 }
 
 const Explorar = ({ allMovies }) => {
-    return (
-      <div className='explorar'>
-        {
-          allMovies.map((element, index) => {
-            return (<Pelicula nombre={element.nombre} link={element.link} imagen={element.imagen} />)
-          })
-        }
-      </div>
-    )
-} 
-
-
-const BigFilm = ({link, image}) => {
-  return (
-    <div className='superDiv' style={{backgroundImage:`url(${image})`, backgroundSize: 'cover', backgroundRepeat:'no-repeat'}}>
-        <div className='superFilm'>
-          <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
-            <div className='play'></div>
-            <div style = {{marginLeft:'30px'}}>Reproducir</div>
-          </a>
+    if(allMovies.length===0){
+      return (
+        <div className='explorar'>
+          <Pelicula go={false} imagen = '../../assets/nocontent.png' isContent={'si'} />
         </div>
+      )
+    } else {
+      return (
+        <div className='explorar'>
+          {
+            allMovies.map((element, index) => {
+              return (<Pelicula go={true} nombre={element.nombre} link={element.link} imagen={element.imagen} />)
+            })
+          }
+        </div>
+      )
+    }
+    
+}
+
+const Busqueda = ({ movies }) => {
+  return (
+    <div>
+      {
+        movies.length!==0 ? <Explorar allMovies={movies} /> :
+        <div>
+          <p style={{color:'white'}}>Ninguna película aparece en el resultado...</p>
+        </div>
+      }
     </div>
   )
 }
 
+const BigFilm = ({link, image, nombre}) => {
+  const navigate = useNavigate()
+  return (
+    <div className='superDiv' style={{backgroundImage:`url(${image})`, backgroundSize: 'cover', backgroundRepeat:'no-repeat'}}>
+        <div className='superFilm' onClick={()=>goPelicula(link, nombre, navigate, true, image)}>
+          <div className='play'></div>
+          <div style = {{marginLeft:'30px'}}>Reproducir</div>
+        </div>
+    </div>
+  )
+}
 
 
 
@@ -218,7 +237,11 @@ const Home = () =>{
   const [explorar, setExplorar] = useState([]) 
   const [favorito, setFavorito] = useState([])     
   const [change, setChange] = useState(false)    
-  const [loading, setLoading] = useState(true)                         
+  const [loading, setLoading] = useState(true)        
+  const [buscar, setBuscar] = useState(false)     
+  const [search, setSearch] = useState(false)  
+  const[searchResult, setSearchResult] = useState([]) 
+  const[text, setText] = useState('')            
 
   const click = (index) => {
     const oldMenu = [...menu]
@@ -230,6 +253,9 @@ const Home = () =>{
         element.clicked = false
       }
     })
+    setSearch(false)
+    setBuscar(false)
+    setSearchResult([])
     setMenu(oldMenu)
   }
 
@@ -287,6 +313,37 @@ const Home = () =>{
     navigate('/')
   }
 
+  const busqueda = () => {
+    const oldMenu = [...menu]
+    oldMenu[0].clicked = true
+    setBuscar(!buscar)
+  }
+
+  const onChange = (event) => {
+    setText(event.target.value)
+  }
+
+  const fetchPeliculas = async(event) => {
+    if(event.key === 'Enter'){
+      console.log(event.key)
+      const url = 'http://127.0.0.1:5000/api/contenido'
+      const response = await fetch(url, {
+        method:'GET',
+        headers: {
+          'nombre' : text
+        }
+      })
+      setSearch(true)
+      const oldMenu = [...menu]
+      oldMenu.map((element, i) => {
+        element.clicked = false
+      })
+      const responseJson = await response.json()
+      setSearchResult(responseJson)
+    }
+  }
+
+
   useEffect( () => { async function sugeridito() { 
       
       const response = await fetchSugerido()
@@ -319,12 +376,12 @@ const Home = () =>{
 
   return(
     <div className="containerhome">
-      <Header menu={menu} click={click} change={change} onClick={changeProfile} switchProfile={switchProfile} cerrarSesion={cerrarSesion} adminCuent={adminCuent}/>
+      <Header onChange={onChange} pelis = {fetchPeliculas} buscar={buscar} busqueda={busqueda} menu={menu} click={click} change={change} onClick={changeProfile} switchProfile={switchProfile} cerrarSesion={cerrarSesion} adminCuent={adminCuent}/>
       <div className='contentFilms'>
         {
           menu[0].clicked && 
           <Fragment>
-            <BigFilm image={random.imagen} link={random.link}/>
+            <BigFilm image={random.imagen} link={random.link} nombre={random.nombre}/>
             <Carrousel nombre = 'Seguir viendo' contenido = {seguirV}/>
             <Carrousel nombre = 'Sugerido' contenido = {sugerido}/>
             <Carrousel nombre = 'Ver nuevamente' contenido = {verdeNuevo}/>
@@ -337,6 +394,10 @@ const Home = () =>{
         {
           menu[2].clicked && 
           <MiLista movies = {favorito}/>
+        }
+        {
+          search && 
+          <Busqueda movies={searchResult}/>
         }
         
       </div>
