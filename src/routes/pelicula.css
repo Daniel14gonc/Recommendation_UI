@@ -21,6 +21,7 @@
     height: 35px;
     background-repeat: no-repeat;
     margin-left: 60px;
+    cursor:pointer;
 }
 
 .filmHolder {
@@ -36,5 +37,30 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
     height: 100px;
+    width: 100px;
+}
+
+.buttonholderc{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 800px;
+    height: 75px;
+    margin-top: 30px;
+}
+
+.like, .completado{
+    cursor: pointer;
+}
+
+.like{
+    background-size: contain;
+    
+}
+
+.completado{
+    background-color: rgb(39, 157, 181);
+    border-radius: 10px;
+    border: 0px;
     width: 100px;
 }
