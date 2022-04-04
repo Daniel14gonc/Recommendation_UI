@@ -47,15 +47,27 @@
     width: 800px;
     height: 75px;
     margin-top: 30px;
+    align-items: center;
 }
 
-.like, .completado{
+.like, .completado, .like2{
     cursor: pointer;
 }
 
 .like{
-    background-size: contain;
+    background-image: url('../../assets/faved.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
     
+}
+.like2{
+    background-image: url('../../assets/favoritito.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
 }
 
 .completado{
@@ -63,4 +75,5 @@
     border-radius: 10px;
     border: 0px;
     width: 100px;
+    height: 60px;
 }

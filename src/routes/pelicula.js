@@ -1,13 +1,18 @@
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './pelicula.css'
 
 const Pelicula = () => {
 
     const navigate = useNavigate()
+
+    const [clik,setClik] = React.useState(false)
+    const [megust,setMegust] = React.useState(false)
+
     const imagen = window.sessionStorage.getItem('pelicula')
     const link = window.sessionStorage.getItem('link')
     const nombre = window.sessionStorage.getItem('nombre')
-    console.log(link)
+    
 
     const regreso = () => {
         window.sessionStorage.removeItem('pelicula')
@@ -38,19 +43,81 @@ const Pelicula = () => {
         })
     }
 
+    const terminado = () => {
+        const url ='http://127.0.0.1:5000/api/pelicula'
+        fetch(url,{
+            method:'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+                'nombre': nombre
+            })
+        })
+
+        navigate('/home')
+    }
+
+    const favoritos = async() =>{
+
+        if(megust===false){
+            const url ='http://127.0.0.1:5000/api/favoritos'
+            const todos = await fetch(url,{
+                method:'GET',
+                headers: {
+                    'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id
+                }
+            })
+
+            const res = await todos.json()
+            const resT = res.filter((elementos)=> {if(elementos.nombre === nombre){setMegust(true)}})
+        }
+        else{
+            const url ='http://127.0.0.1:5000/api/favoritos'
+            const todos = await fetch(url,{
+                method:'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    'idperfil' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+                    'nombre': nombre
+                })
+            })
+        }
+        
+
+    }
+
+    useEffect( ()=>{ async function favoritito(){
+        const url ='http://127.0.0.1:5000/api/favoritos'
+        const todos = await fetch(url,{
+            method:'GET',
+            headers: {
+                'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id
+            }
+        })
+
+        const res = await todos.json()
+        const resT = res.filter((elementos)=> {if(elementos.nombre === nombre){setMegust(true)}})
+    }
+    favoritito()
+    },[])
+
     return (
         <div className='containerPelicula'>
             <div className='headerPelicula'>
                 <div onClick={() => regreso()}></div>
             </div>)
             <div className='filmHolder' onClick = {() => ingreso()} style={{backgroundImage:`url(${imagen})`, backgroundSize:'100% 100%'}}>
-                <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
+                <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer" onClick={()=> setClik(true)}>
                     <div></div>
                 </a>
             </div>
             <div className='buttonholderc'>
-                <div className='like' style={{background: false ? 'url(../../assets/faved)' : 'url(../../assets/favoritito)'}}></div>
-                <button className='completado'>Completado</button>
+                <div className={megust ? 'like' : 'like2'} onClick = {favoritos} ></div>
+                {clik && <button className='completado' onClick={() => terminado()} >Completado</button>}
             </div>
         </div>
     )
