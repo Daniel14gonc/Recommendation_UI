@@ -63,7 +63,7 @@ const AdminCuenta = () => {
   useEffect( () => { async function cambioTipo() { 
       
     const response = await fetchTipo()
-    await setTipo(response)
+    await setTipo(response.tipo)
     
     if(response['tipo'] ==='basica'){
       setTipoactivo([true, false, false])
