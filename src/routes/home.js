@@ -136,16 +136,9 @@ const MiLista = ({ movies }) => {
 
 const goPelicula = (link, nombre, navigate, go, imagen) => {
   if(go){
-    const url ='http://127.0.0.1:5000/api/consumo'
-    const response = fetch(url, {
-      method:'POST',
-      headers: {
-        'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
-        'contenido': nombre
-      }
-    })
     window.sessionStorage.setItem('link', link)
     window.sessionStorage.setItem('pelicula', imagen)
+    window.sessionStorage.setItem('nombre', nombre)
     navigate('/pelicula')
   }
 }

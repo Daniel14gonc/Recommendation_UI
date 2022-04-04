@@ -6,16 +6,36 @@ const Pelicula = () => {
     const navigate = useNavigate()
     const imagen = window.sessionStorage.getItem('pelicula')
     const link = window.sessionStorage.getItem('link')
+    const nombre = window.sessionStorage.getItem('nombre')
     console.log(link)
 
     const regreso = () => {
         window.sessionStorage.removeItem('pelicula')
         window.sessionStorage.removeItem('link')
+        window.sessionStorage.removeItem('nombre')
         navigate('/home')
     }
 
     const ingreso = () => {
-        
+        const url ='http://127.0.0.1:5000/api/consumo'
+        fetch(url, {
+            method:'POST',
+            headers: {
+                'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+                'contenido': nombre
+            }
+            })
+            const url1 ='http://127.0.0.1:5000/api/pelicula'
+            fetch(url1, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
+                'nombre': nombre
+            })
+        })
     }
 
     return (
