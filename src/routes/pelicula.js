@@ -2,11 +2,12 @@ import React, { Fragment, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './pelicula.css'
 
-const Anuncio = ({setAnun}) =>{
+const Anuncio = ({setAnun, anuncio}) =>{
+    console.log(anuncio)
     return(
         <Fragment>
             <div className='cualq'>
-                <div className='modal-content'>
+                <div className='modal-content' style={{backgroundImage:`url(${anuncio.link})`, backgroundSize:'100% 100%'}}>
                     <button className='cerrar' onClick={() => setAnun(false)}></button>
                 </div>
             </div>
@@ -29,6 +30,7 @@ const Pelicula = () => {
     const [anun, setAnun] = React.useState(false)
     const interval = useRef(null)
     const tipo = useRef(null)
+    const [anuncio,setAnuncio] = React.useState(null)
 
     const imagen = window.sessionStorage.getItem('pelicula')
     const link = window.sessionStorage.getItem('link')
@@ -45,7 +47,7 @@ const Pelicula = () => {
 
     const ingreso = async() => {
         const url ='http://127.0.0.1:5000/api/consumo'
-        fetch(url, {
+        await fetch(url, {
             method:'POST',
             headers: {
                 'id' : JSON.parse( window.sessionStorage.getItem('perfil')).id,
@@ -53,7 +55,7 @@ const Pelicula = () => {
             }
             })
         const url1 ='http://127.0.0.1:5000/api/pelicula'
-        fetch(url1, {
+        await fetch(url1, {
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -64,13 +66,33 @@ const Pelicula = () => {
             })
         })
         
+        
+        const url2 ='http://127.0.0.1:5000/api/anuncio'
+        const link = await fetch(url2,{
+            method:'GET',
+            headers: {
+                'nombre' : ( window.sessionStorage.getItem('nombre'))
+            }
+        })
+
+        setAnuncio(await link.json()) 
     
         
 
         setClik(true)
         if(tipo.current === 'basica'){
             setAnun(true)
-            interval.current = setInterval( () => {
+            interval.current = setInterval( async() =>  {
+                const url2 ='http://127.0.0.1:5000/api/anuncio'
+                const link = await fetch(url2,{
+                    method:'GET',
+                    headers: {
+                        'nombre' : ( window.sessionStorage.getItem('nombre'))
+                    }
+                })
+
+                setAnuncio(await link.json())
+
             setAnun(true)},10000)
         }
         
@@ -92,6 +114,7 @@ const Pelicula = () => {
         clearInterval(interval.current)
         navigate('/home')
     }
+
 
     const favoritos = async() =>{
         
@@ -162,7 +185,7 @@ const Pelicula = () => {
 
     return (
         <div className='containerPelicula'>
-            {anun && <Anuncio setAnun={setAnun}/>}
+            {anun && <Anuncio setAnun={setAnun} anuncio={anuncio}/>}
             <div className='headerPelicula'>
                 <div onClick={() => regreso()}></div>
             </div>)
