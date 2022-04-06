@@ -74,6 +74,11 @@ const Logon = () => {
           setValid(false)
         }
         else{
+          const use = {
+            isLoggedIn: true,
+            correo: correo
+          }
+          window.sessionStorage.setItem('user', JSON.stringify(use))
           navigate('/perfiles')
         }
         
