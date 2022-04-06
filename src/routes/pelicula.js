@@ -1,6 +1,33 @@
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './pelicula.css'
+
+const Anuncio = ({setAnun}) =>{
+    return(
+        <Fragment>
+            <div className='cualq'>
+                <div className='modal-content'>
+                    <button className='cerrar' onClick={() => setAnun(false)}></button>
+                </div>
+            </div>
+            <div className='modal-container'></div>
+        </Fragment>
+    )
+
+}
+
+const fetchTipo = (tipo) =>{
+    const url = 'http://127.0.0.1:5000/api/ajustecuenta'
+    const response = fetch(url, {
+      method:'GET',
+      headers: {
+        'correo' : JSON.parse( window.sessionStorage.getItem('user')).correo
+      }
+    })
+        
+    const responseJson = response.json()
+    tipo.current = responseJson.tipo
+}
 
 const Pelicula = () => {
 
@@ -8,20 +35,26 @@ const Pelicula = () => {
 
     const [clik,setClik] = React.useState(false)
     const [megust,setMegust] = React.useState(false)
+    const [anun, setAnun] = React.useState(false)
+    const interval = useRef(null)
+    const tipo = useRef(null)
 
     const imagen = window.sessionStorage.getItem('pelicula')
     const link = window.sessionStorage.getItem('link')
     const nombre = window.sessionStorage.getItem('nombre')
     
+    fetchTipo(tipo)
 
     const regreso = () => {
         window.sessionStorage.removeItem('pelicula')
         window.sessionStorage.removeItem('link')
         window.sessionStorage.removeItem('nombre')
+        clearInterval(interval.current)
         navigate('/home')
     }
 
     const ingreso = () => {
+
         const url ='http://127.0.0.1:5000/api/consumo'
         fetch(url, {
             method:'POST',
@@ -41,6 +74,14 @@ const Pelicula = () => {
                 'nombre': nombre
             })
         })
+        setClik(true)
+        if(tipo.current === 'basica'){
+            setAnun(true)
+            interval.current = setInterval( () => {
+            setAnun(true)},10000)
+        }
+
+        //fetchAnuncio()
     }
 
     const terminado = () => {
@@ -56,6 +97,7 @@ const Pelicula = () => {
             })
         })
 
+        clearInterval(interval.current)
         navigate('/home')
     }
 
@@ -118,11 +160,12 @@ const Pelicula = () => {
 
     return (
         <div className='containerPelicula'>
+            {anun && <Anuncio setAnun={setAnun}/>}
             <div className='headerPelicula'>
                 <div onClick={() => regreso()}></div>
             </div>)
             <div className='filmHolder' onClick = {() => ingreso()} style={{backgroundImage:`url(${imagen})`, backgroundSize:'100% 100%'}}>
-                <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer" onClick={()=> setClik(true)}>
+                <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
                     <div></div>
                 </a>
             </div>
