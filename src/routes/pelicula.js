@@ -16,17 +16,8 @@ const Anuncio = ({setAnun}) =>{
 
 }
 
-const fetchTipo = (tipo) =>{
-    const url = 'http://127.0.0.1:5000/api/ajustecuenta'
-    const response = fetch(url, {
-      method:'GET',
-      headers: {
-        'correo' : JSON.parse( window.sessionStorage.getItem('user')).correo
-      }
-    })
-        
-    const responseJson = response.json()
-    tipo.current = responseJson.tipo
+const fetchTipo = async(tipo) =>{
+    
 }
 
 const Pelicula = () => {
@@ -43,7 +34,6 @@ const Pelicula = () => {
     const link = window.sessionStorage.getItem('link')
     const nombre = window.sessionStorage.getItem('nombre')
     
-    fetchTipo(tipo)
 
     const regreso = () => {
         window.sessionStorage.removeItem('pelicula')
@@ -53,8 +43,7 @@ const Pelicula = () => {
         navigate('/home')
     }
 
-    const ingreso = () => {
-
+    const ingreso = async() => {
         const url ='http://127.0.0.1:5000/api/consumo'
         fetch(url, {
             method:'POST',
@@ -63,8 +52,8 @@ const Pelicula = () => {
                 'contenido': nombre
             }
             })
-            const url1 ='http://127.0.0.1:5000/api/pelicula'
-            fetch(url1, {
+        const url1 ='http://127.0.0.1:5000/api/pelicula'
+        fetch(url1, {
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,14 +63,17 @@ const Pelicula = () => {
                 'nombre': nombre
             })
         })
+        
+    
+        
+
         setClik(true)
         if(tipo.current === 'basica'){
             setAnun(true)
             interval.current = setInterval( () => {
             setAnun(true)},10000)
         }
-
-        //fetchAnuncio()
+        
     }
 
     const terminado = () => {
@@ -154,6 +146,16 @@ const Pelicula = () => {
 
         const res = await todos.json()
         const resT = res.filter((elementos)=> {if(elementos.nombre === nombre){setMegust(true)}})
+        const url1 = 'http://127.0.0.1:5000/api/ajustecuenta'
+        const response = await fetch(url1, {
+            method:'GET',
+            headers: {
+                'correo' : JSON.parse( window.sessionStorage.getItem('user')).correo
+            }
+        })
+            
+        const responseJson = await response.json()
+        tipo.current = responseJson.tipo
     }
     favoritito()
     },[])
@@ -164,8 +166,8 @@ const Pelicula = () => {
             <div className='headerPelicula'>
                 <div onClick={() => regreso()}></div>
             </div>)
-            <div className='filmHolder' onClick = {() => ingreso()} style={{backgroundImage:`url(${imagen})`, backgroundSize:'100% 100%'}}>
-                <a href={link} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
+            <div className='filmHolder'  style={{backgroundImage:`url(${imagen})`, backgroundSize:'100% 100%'}}>
+                <a href={link} onClick = {() => ingreso()} target="_blank" style={{textDecoration:'none', display:'flex', flexDirection: 'row', color:'black', fontSize: '20px'}} rel="noopener noreferrer">
                     <div></div>
                 </a>
             </div>
