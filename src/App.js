@@ -15,6 +15,7 @@ import {
   Route,
 } from "react-router-dom";
 import { useState } from 'react';
+import AdminHome from './routes/adminHome';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path='/adminCuenta' exact element ={<AdminCuenta/>}/>
         <Route path='/pelicula' exact element ={<Pelicula />}/>
         <Route path='/adminLogin' exact element ={<AdminLogin />}/>
+        <Route path='/adminhome' exact element ={<AdminHome />}/>
       </Routes>
     </BrowserRouter>
   )
