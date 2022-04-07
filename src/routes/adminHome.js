@@ -37,14 +37,40 @@ const Header = ({onChange, desp, Cerrarsesion}) =>{
     )
   }
 
-  const Cuentas = () => {
+  const Cuenta = ({ id, correo }) => {
+      return(
+        <tr>
+            <td>{id}</td>
+            <td>{correo}</td> 
+            <td><button className='botonEdit'>Editar</button></td>
+            <td><button className='botonBaja'>Dar de baja</button></td>
+        </tr>
+      )
+  }
+
+  const Cuentas = ({ cuentas }) => {
 
     return(
-        <div> 
-            <div>
-                
-            </div> 
+        <div className='cuentas'>
+            <table>
+                <thead>
+                    <tr>
+                    <th>Id</th>
+                    <th>Correo</th>
+                    <th>Editar usuario</th>
+                    <th>Modificar estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cuentas.map((elements) => {
+                        return (
+                            <Cuenta id={elements.id} correo={elements.correo} />
+                        )
+                    })}
+                </tbody>
+            </table>
         </div>
+        
     )
   }
 
@@ -52,6 +78,25 @@ const AdminHome = () => {
 
     const navigate = useNavigate()
     const [desp, setDesp] = useState(false)
+    const [opciones, setOpciones] = useState([true, false, false, false, false])
+
+
+    const cuentas = [
+        {id: '1', correo: 'algo'},
+        {id: '2', correo: 'algo'},
+        {id: '3', correo: 'algo'},
+        {id: '4', correo: 'algo'},
+        {id: '5', correo: 'algo'},
+        {id: '6', correo: 'algo'},
+        {id: '7', correo: 'algo'},
+        {id: '1', correo: 'algo'},
+        {id: '2', correo: 'algo'},
+        {id: '3', correo: 'algo'},
+        {id: '4', correo: 'algo'},
+        {id: '5', correo: 'algo'},
+        {id: '6', correo: 'algo'},
+        {id: '7', correo: 'algo'}
+    ]
 
 
 
@@ -66,9 +111,14 @@ const AdminHome = () => {
       }
 
     return (
-        <div className="containerHome">
+        <div className="adminContainer">
             <Header onChange={changeDesp} desp ={desp} Cerrarsesion ={cerrarSesion}/>
             <div className="adminBody">
+                {opciones[0] && <Cuentas cuentas={cuentas}/>}
+                {opciones[1] && <Cuentas />}
+                {opciones[2] && <Cuentas />}
+                {opciones[3] && <Cuentas />}
+                {opciones[4] && <Cuentas />}
 
             </div>
         </div>

@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+    
 }
 
 .adminHeader {
@@ -51,6 +52,15 @@
     opacity: 0.9;
   }
 
+  .adminBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    background-color: #05183C;
+  }
+
   .pestanas{
     display: flex;
     flex-direction: row;
@@ -58,4 +68,76 @@
     justify-content: space-between;
     width: 700px;
     margin-left: 300px;
+  }
+
+  .cuentas {
+    width: 65%;
+    padding: 30px;
+    margin-top: 100px;
+    background-color: #05183C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+
+  .cuenta {
+    width: 80%;
+    height: 50px;
+    background-color: rgb(134, 130, 130);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .cuenta div:first-child {
+    margin-left: 60px;
+  }
+
+  .cuenta div:nth-child(2) {
+    margin-left: 50px;
+  }
+
+  .cuenta div:nth-child(3) {
+    margin-left: 50px;
+  }
+
+  .botonBaja {
+    background-color: orange;
+    width: 100px;
+    height: 30px;
+    border: 0px;
+    border-radius: 10px;
+  }
+
+  .botonEdit {
+    background-color: green;
+    width: 100px;
+    height: 30px;
+    border: 0px;
+    border-radius: 10px;
+  }
+
+  table, th, td {
+    border: 1px  rgb(134, 130, 130);
+    border-collapse: collapse;
+    border-style: solid none solid none;
+  }
+
+  table {
+    width: 70%;
+    border: 1px solid rgb(134, 130, 130);
+  }
+
+  th {
+    height: 50px;
+    background-color: rgb(134, 130, 130);
+    color: black;
+  }
+
+  td {
+    text-align: center;
+    padding: 10px;
+    background-color: rgb(224, 218, 218);
   }
