@@ -6,6 +6,8 @@ import Perfiles from './routes/perfiles';
 import Home from './routes/home';
 import AdminCuenta from './routes/adminCuenta';
 import Pelicula from './routes/pelicula';
+import AdminLogin from './routes/adminLogin';
+
 
 import {
   BrowserRouter,
@@ -24,6 +26,7 @@ function App() {
         <Route path='/home' exact element ={<Home/>}/>
         <Route path='/adminCuenta' exact element ={<AdminCuenta/>}/>
         <Route path='/pelicula' exact element ={<Pelicula />}/>
+        <Route path='/adminLogin' exact element ={<AdminLogin />}/>
       </Routes>
     </BrowserRouter>
   )

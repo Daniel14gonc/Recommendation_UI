@@ -1,18 +1,11 @@
-import './login.css'
-import { createBrowserHistory as history} from 'history';
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react';
 
-const url = 'http://127.0.0.1:5000/api/signin';
+const url = 'http://127.0.0.1:5000/api/signinAdmin';
 
 
-const ButtonAdmin = ({ navigate }) => {
-  return (
-    <div className='admin' onClick={() => {navigate('/adminLogin')}}>Administrador</div>
-  )
-}
 
-const Login = () => {
+const AdminLogin = () => {
 
   const[correo, setCorreo] = useState(null)
   const[password, setPassword] = useState(null)
@@ -51,7 +44,7 @@ const Login = () => {
         correo: correo
       }
       window.sessionStorage.setItem('user', JSON.stringify(use))
-      ir('/perfiles')
+      ir('/adminhome')
     }
 
   }
@@ -66,7 +59,7 @@ const Login = () => {
             navigate('/home')
           } else {
             console.log('perfil')
-            navigate('/perfiles')
+            //navigate('/perfiles')
           }
         }
         
@@ -77,7 +70,7 @@ const Login = () => {
   return(
     <div className = "container">
       <div className="login-box">
-        <h2 className = "placeholder">Inicia sesión</h2>
+        <h2 className = "placeholder">Inicia sesión como admin</h2>
           <div className='input-container'>
             <input className = "correo" placeholder="Correo Electronico" onChange ={getCorreo} />
             <input type='password' className = "contrasena" placeholder="Contraseña" onChange ={getPassword} />
@@ -87,12 +80,10 @@ const Login = () => {
           </div>
           <div className='button-container'>
             <button className = "botonIngresar" onClick={validarRegistro}>Ingresar</button>
-            <button className = "botonRegistro" onClick={() => ir('/logon')}>Registrarse</button>
-            <ButtonAdmin navigate={navigate}/>
           </div>
       </div>
     </div>
   )
 }
 
-export default Login
+export default AdminLogin
