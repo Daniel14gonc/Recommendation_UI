@@ -96,6 +96,9 @@ const Cuentas = ({ cuentas,setearcorreo, change}) => {
 
 return(
     <div className='titulos'>
+        <div className='TitleS'>
+                <h1>Cuentas</h1>
+            </div>
         <table>
             <thead>
                 <tr>
@@ -179,6 +182,9 @@ const Estrellas = ({ estrellas, change }) =>{
 
     return(
         <div className='titulos'>
+            <div className='TitleS'>
+                <h1>Estrellas</h1>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -232,8 +238,6 @@ const Anunciante = ({nombre, index, onChange, change, edite, click, cambio}) =>{
 }
 
 
-
-
 const Anunciantes = ({anunciantes, change}) =>{
     const [edite, setEdite] = useState(anunciantes.map(() => false))
     const noms = useRef(anunciantes.map((elementos) => elementos.nombre))
@@ -273,6 +277,10 @@ const Anunciantes = ({anunciantes, change}) =>{
 
     return(
         <div className='titulos'>
+            <div className='Title'>
+                <h1>Anunciantes</h1>
+                <button>Crear nuevo</button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -352,6 +360,10 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
 const Anuncios = ({anuncios, anunciantes, change }) =>{
     return(
         <div className='titulos'>
+            <div className='Title'>
+                <h1>Anuncios</h1>
+                <button>Crear nuevo</button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -377,6 +389,9 @@ const Anuncios = ({anuncios, anunciantes, change }) =>{
 
 
 const Contenido = ({nombre}) =>{
+    
+    
+
     return(
         <tr>
             <td>{nombre}</td> 
@@ -386,8 +401,13 @@ const Contenido = ({nombre}) =>{
         )
 }
 const Contenidos = ({contenidos}) =>{
+    const navigate = useNavigate()
     return(
         <div className='titulos'>
+             <div className='Title'>
+                <h1>Contenido</h1>
+                <button onClick={() => navigate('/newmovie')}>Crear nuevo</button>
+            </div>
             <table>
                 <thead>
                     <tr>

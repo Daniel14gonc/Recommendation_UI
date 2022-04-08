@@ -7,6 +7,7 @@ import Home from './routes/home';
 import AdminCuenta from './routes/adminCuenta';
 import Pelicula from './routes/pelicula';
 import AdminLogin from './routes/adminLogin';
+import NewMovie from './routes/newMovies';
 
 
 import {
@@ -29,6 +30,7 @@ function App() {
         <Route path='/pelicula' exact element ={<Pelicula />}/>
         <Route path='/adminLogin' exact element ={<AdminLogin />}/>
         <Route path='/adminhome' exact element ={<AdminHome />}/>
+        <Route path='/newmovie' exact element ={<NewMovie />}/>
       </Routes>
     </BrowserRouter>
   )
