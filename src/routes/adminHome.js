@@ -37,17 +37,63 @@ const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
     )
   }
 
-const Cuenta = ({ correo, activo, setearcorreo, clikk}) => {
+const Cuenta = ({ correo, activo, setearcorreo, edita, onChangy, change, index, clicky, cambiar}) => {
     return(
     <tr>
-        <td>{correo}</td> 
-        <td><button className='botonEdit'>Editar</button></td>
-        {activo ? <td><button className='botonBaja' onClick={()=>{setearcorreo(correo, !clikk)}}>Dar de baja</button></td> : <td><button className='botonActivo' onClick={()=>{setearcorreo(correo, !clikk)}}>Activar cuenta</button></td>}
+        {
+        !edita ?
+        <Fragment>
+            <td>{correo}</td> 
+            <td><button className='botonEdit' onClick={clicky}>Editar</button></td>
+            {activo ? <td><button className='botonBaja' onClick={()=>{setearcorreo(correo, change)}}>Dar de baja</button></td> : <td><button className='botonActivo' onClick={()=>{setearcorreo(correo, change)}}>Activar cuenta</button></td>}
+        </Fragment> :
+        <Fragment>
+            <td><input type="text" defaultValue={correo} style={{textAlign:'center'}} className={'inputMail'} onChange={(e) => onChangy(e, index)} /></td> 
+            <td><button onClick={cambiar} className='botonEdit' style={{backgroundColor:'rgb(81, 209, 8)'}}>Listo</button></td>
+            {activo ? <td><button className='botonBaja' onClick={()=>{setearcorreo(correo, change)}}>Dar de baja</button></td> : <td><button className='botonActivo' onClick={()=>{setearcorreo(correo, change)}}>Activar cuenta</button></td>}
+        </Fragment>
+        }
     </tr>
     )
 }
 
-const Cuentas = ({ cuentas,setearcorreo, setClikk, clikk}) => {
+const Cuentas = ({ cuentas,setearcorreo, change}) => {
+    const [edita, setEdita] = useState(cuentas.map(() => false))
+    const corrs = useRef(cuentas.map((elementos) => elementos.correo))
+
+    const clicky = (index) =>{
+        const viejo = [...edita]
+        viejo[index] = true
+        setEdita(viejo)
+    } 
+
+
+    const handleChangy = (event, index) => {
+        corrs.current[index] = event.target.value
+    }
+
+    const cambiar = async (index, correo) => {
+        const url = 'http://127.0.0.1:5000/api/cuentas';
+        const response = await fetch(url, {
+          method:'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body : JSON.stringify({
+            new : corrs.current[index],
+            old : correo
+          })
+        })
+       const viejin = [...edita]
+        
+            
+        const responseJson = await response.json()
+        viejin[index] = false
+        setEdita(viejin)
+        change()
+        return await responseJson
+    }
+
 return(
     <div className='titulos'>
         <table>
@@ -59,9 +105,9 @@ return(
                 </tr>
             </thead>
             <tbody>
-                {cuentas.map((elements) => {
+                {cuentas.map((elements, index) => {
                     return (
-                        <Cuenta correo={elements.correo} activo={elements.activo} setearcorreo={setearcorreo} setClikk={setClikk} clikk={clikk}/>
+                        <Cuenta index ={index} correo={elements.correo} activo={elements.activo} setearcorreo={setearcorreo} change={change} clicky = {() => clicky(index)} onChangy={handleChangy} cambiar = {() => cambiar(index, elements.correo)} edita = {edita[index]}/>
                     )
                 })}
             </tbody>
@@ -70,6 +116,7 @@ return(
     
 )
 }
+
 
 
 const Estrella = ({ change, nombre, edit, click, onChange, index }) => {
@@ -96,7 +143,6 @@ const Estrella = ({ change, nombre, edit, click, onChange, index }) => {
 const Estrellas = ({ estrellas, change }) =>{
     const [edit, setEdit] = useState(estrellas.map(() => false))
     const star = useRef(estrellas.map((elements)=> elements.nombre))
-    const id = useRef(null)
 
     const click = (index) => {
         console.log(edit)
@@ -153,16 +199,78 @@ const Estrellas = ({ estrellas, change }) =>{
     )
 }
 
-const Anunciante = ({nombre}) =>{
+const Anunciante = ({nombre, index, onChange, change, edite, click, cambio}) =>{
+    
+    const borrar = async() => {
+        const url = 'http://127.0.0.1:5000/api/anunciante';
+        const response = await fetch(url, {
+          method:'DELETE',
+          headers:{
+            'nombre': nombre
+        }
+        })
+
+        cambio()
+    }
+
     return(
         <tr>
-            <td>{nombre}</td> 
-            <td><button className='botonEdit'>Editar</button></td>
-            <td><button className='botonEliminar'>Eliminar</button></td>
+            {!edite ?
+            <Fragment>
+                <td>{nombre}</td> 
+                <td><button className='botonEdit' onClick={click}>Editar</button></td>
+                <td><button className='botonEliminar' onClick={borrar}>Eliminar</button></td>
+            </Fragment> :
+            <Fragment>
+                <td><input type="text" defaultValue={nombre} style={{textAlign:'center'}} className={'inputStar'} onChange={(e) => onChange(e, index)} /></td> 
+                <td><button onClick={change} className='botonEdit' style={{backgroundColor:'rgb(81, 209, 8)'}}>Listo</button></td>
+                <td><button className='botonEliminar'>Eliminar</button></td>
+            </Fragment>
+            }
         </tr>
         )
 }
-const Anunciantes = ({anunciantes}) =>{
+
+
+
+
+const Anunciantes = ({anunciantes, change}) =>{
+    const [edite, setEdite] = useState(anunciantes.map(() => false))
+    const noms = useRef(anunciantes.map((elementos) => elementos.nombre))
+
+    const clicki = (index) =>{
+        const old = [...edite]
+        old[index] = true
+        setEdite(old)
+    }
+
+    const cambia = async (index, nombre) => {
+        const url = 'http://127.0.0.1:5000/api/anunciante';
+        const response = await fetch(url, {
+          method:'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body : JSON.stringify({
+            new : noms.current[index],
+            old : nombre
+          })
+        })
+       const old = [...edite]
+        
+            
+        const responseJson = await response.json()
+        old[index] = false
+        setEdite(old)
+        change()
+        return await responseJson
+    }
+
+
+    const handleChangne = (event, index) =>{
+        noms.current[index] = event.target.value
+    }
+
     return(
         <div className='titulos'>
             <table>
@@ -174,9 +282,9 @@ const Anunciantes = ({anunciantes}) =>{
                     </tr>
                 </thead>
                 <tbody>
-                    {anunciantes.map((elements) => {
+                    {anunciantes.map((elements, index) => {
                         return (
-                            <Anunciante nombre={elements.nombre} />
+                            <Anunciante nombre={elements.nombre} index = {index} onChange={handleChangne} change={()=>{cambia(index, elements.nombre)} } click = {() => {clicki(index)}} cambio={change} edite={edite[index]}/>
                         )
                     })}
                 </tbody>
@@ -357,7 +465,7 @@ const AdminHome = () => {
         return await responseJson
     }
 
-    const fetchActivado = async(setClikk, a) =>{
+    const fetchActivado = async(a) =>{
         const url = 'http://127.0.0.1:5000/api/admin_Activado';
         const response = await fetch(url, {
           method:'PUT',
@@ -370,7 +478,7 @@ const AdminHome = () => {
         })
             
         const responseJson = await response.json()
-        await setClikk(a)
+        await a()
         return await responseJson
     }
 
@@ -414,7 +522,7 @@ const AdminHome = () => {
 
     const setearcorreo = (corr, a) =>{
         correo.current = corr
-        fetchActivado(setClikk, a)
+        fetchActivado(a)
     }
 
     const opt = (algo)=>{
@@ -443,11 +551,11 @@ const AdminHome = () => {
         <div className="adminContainer">
             <Header onChange={changeDesp} desp ={desp} Cerrarsesion ={cerrarSesion} opt={opt}/>
             <div className="adminBody">
-                    {opciones[0] && <Cuentas cuentas={cuentas} setearcorreo={setearcorreo} clikk={clikk}/>}
+                    {opciones[0] && <Cuentas cuentas={cuentas} setearcorreo={setearcorreo} change={() => setClikk(!clikk)}/>}
                     {opciones[1] && <Estrellas estrellas={estrellas} change={() => setClikk(!clikk)} />}
                     {opciones[2] && <Contenidos contenidos={contenidos}/>}
                     {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
-                    {opciones[4] && <Anunciantes anunciantes={anunciantes}/> }
+                    {opciones[4] && <Anunciantes anunciantes={anunciantes} change={() => setClikk(!clikk)}/> }
                 
             </div>
         </div>
