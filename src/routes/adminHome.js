@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './adminHome.css'
 
@@ -10,7 +10,7 @@ const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
                 <div  className='adminbubble' onClick={onChange}></div>
                 {desp && 
                 <div className='admindropdown'>
-                    <div className='adminswitch' style={{color:'#4e91dd'}}>Manuel</div>
+                    <div className='adminswitch' style={{color:'#4e91dd'}}>Admin</div>
                     <div style={{color:'red'}} className='adminswitch' onClick={Cerrarsesion}>Cerrar sesión</div>
                 </div>
                 }
@@ -72,16 +72,65 @@ return(
 }
 
 
-const Estrella = ({ nombre  }) => {
+const Estrella = ({ change, nombre, edit, click, onChange, index }) => {
     return(
     <tr>
-        <td>{nombre}</td> 
-        <td><button className='botonEdit'>Editar</button></td>
+        {
+            !edit ?
+            <Fragment>
+                <td>{nombre}</td> 
+                <td><button onClick={click} className='botonEdit' >Editar</button></td>
+            </Fragment> :
+
+            <Fragment>
+            <td><input type="text" defaultValue={nombre} style={{textAlign:'center'}} className={'inputStar'} onChange={(e) => onChange(e, index)} /></td> 
+            <td><button onClick={change} className='botonEdit' style={{backgroundColor:'rgb(81, 209, 8)'}}>Listo</button></td>
+        </Fragment> 
+            
+        }
+        
     </tr>
     )
 }
 
-const Estrellas = ({estrellas}) =>{
+const Estrellas = ({ estrellas, change }) =>{
+    const [edit, setEdit] = useState(estrellas.map(() => false))
+    const star = useRef(estrellas.map((elements)=> elements.nombre))
+    const id = useRef(null)
+
+    const click = (index) => {
+        console.log(edit)
+        const old = [...edit]
+        old[index] = true
+        setEdit(old)
+    }
+
+    const listo = async (index, id) => {
+        const url = 'http://127.0.0.1:5000/api/stars';
+        const response = await fetch(url, {
+          method:'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body : JSON.stringify({
+            nombre : star.current[index],
+            id : id
+          })
+        })
+       const old = [...edit]
+        
+            
+        const responseJson = await response.json()
+        old[index] = false
+        setEdit(old)
+        change()
+        return await responseJson
+    }
+
+    const handleChange = (event, index) => {
+        star.current[index] = event.target.value
+    }
+
     return(
         <div className='titulos'>
             <table>
@@ -92,9 +141,9 @@ const Estrellas = ({estrellas}) =>{
                     </tr>
                 </thead>
                 <tbody>
-                    {estrellas.map((elements) => {
+                    {estrellas.map((elements, index) => {
                         return (
-                            <Estrella nombre={elements.nombre} />
+                            <Estrella nombre={elements.nombre} edit={edit[index]} click = {() => click(index)} onChange={handleChange} index={index} change={()=>listo(index, elements.id)} id={elements.id}/>
                         )
                     })}
                 </tbody>
@@ -138,24 +187,68 @@ const Anunciantes = ({anunciantes}) =>{
 
 }
 
-const Anuncio = ({id, anunciante}) =>{
+const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
+    const anun = useRef(anunciante)
+
+    const change = (event) => {
+        anun.current = event.target.value
+    }
+
+    const onClick = async() => {
+        const url = 'http://127.0.0.1:5000/api/anuncios';
+        const response = await fetch(url, {
+          method:'PUT',
+          headers:{
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              id : id,
+              anunciante: anun.current
+          })
+        })
+            
+        const responseJson = await response.json()
+        change()
+        return await responseJson
+    }
+
+    const deletion = async() => {
+        const url = 'http://127.0.0.1:5000/api/anuncios';
+        const response = await fetch(url, {
+          method:'DELETE',
+          headers:{
+              'id': id
+          }
+        })
+
+        changes()
+    }
+
     return(
         <tr>
             <td>{id}</td> 
-            <td>{anunciante}</td>
-            <td><button className='botonEdit'>Editar</button></td>
-            <td><button className='botonEliminar'>Eliminar</button></td>
+            <td>
+                <select className='selectAnunciante' onChange={change}>
+                    <option value="" selected disabled hidden>{anunciante}</option>
+                    {anunciantes.map(
+                        (element) => <option value={element.nombre}>{element.nombre}</option>
+                    )}
+                </select>
+            </td>
+            <td><button onClick={onClick} className='botonEdit'>Editar</button></td>
+            <td><button onClick={deletion} className='botonEliminar'>Eliminar</button></td>
         </tr>
         )
 }
-const Anuncios = ({anuncios}) =>{
+
+const Anuncios = ({anuncios, anunciantes, change }) =>{
     return(
         <div className='titulos'>
             <table>
                 <thead>
                     <tr>
                     <th>Id</th>
-                    <th>Link</th>
+                    <th>Anunciante</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                     </tr>
@@ -163,7 +256,7 @@ const Anuncios = ({anuncios}) =>{
                 <tbody>
                     {anuncios.map((elements) => {
                         return (
-                            <Anuncio id={elements.id} anunciante={elements.anunciante}/>
+                            <Anuncio id={elements.id} anunciantes={anunciantes} anunciante={elements.anunciante} changes={change} />
                         )
                     })}
                 </tbody>
@@ -208,6 +301,18 @@ const Contenidos = ({contenidos}) =>{
     )
 
 }
+
+
+const fetchEstrellas = async() =>{
+    const url = 'http://127.0.0.1:5000/api/admin_getEstrellas';
+    const response = await fetch(url, {
+      method:'GET'
+    })
+        
+    const responseJson = await response.json()
+    return await responseJson
+}
+
 const AdminHome = () => {
 
     const fetchCuentas = async() =>{
@@ -220,15 +325,7 @@ const AdminHome = () => {
         return await responseJson
     }
 
-    const fetchEstrellas = async() =>{
-        const url = 'http://127.0.0.1:5000/api/admin_getEstrellas';
-        const response = await fetch(url, {
-          method:'GET'
-        })
-            
-        const responseJson = await response.json()
-        return await responseJson
-    }
+    
 
     const fetchAnunciantes = async() =>{
         const url3 = 'http://127.0.0.1:5000/api/admin_getAnunciantes';
@@ -337,6 +434,7 @@ const AdminHome = () => {
         else if(algo==='anunciantes'){
             setOpciones([false, false, false, false, true])
         }
+        setClikk(!clikk)
 
     }
 
@@ -346,10 +444,10 @@ const AdminHome = () => {
             <Header onChange={changeDesp} desp ={desp} Cerrarsesion ={cerrarSesion} opt={opt}/>
             <div className="adminBody">
                     {opciones[0] && <Cuentas cuentas={cuentas} setearcorreo={setearcorreo} clikk={clikk}/>}
-                    {opciones[1] && <Estrellas estrellas={estrellas}/>}
+                    {opciones[1] && <Estrellas estrellas={estrellas} change={() => setClikk(!clikk)} />}
                     {opciones[2] && <Contenidos contenidos={contenidos}/>}
-                    {opciones[3] && <Anuncios anuncios={anuncios}/>}
-                    {opciones[4] && <Anunciantes anunciantes={anunciantes}/>}
+                    {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
+                    {opciones[4] && <Anunciantes anunciantes={anunciantes}/> }
                 
             </div>
         </div>

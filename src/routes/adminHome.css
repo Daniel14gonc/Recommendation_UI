@@ -101,6 +101,7 @@
     border: 0px;
     border-radius: 10px;
     cursor: pointer;
+    cursor: pointer;
   }
 
   table, th, td {
@@ -147,3 +148,32 @@
     border-radius: 10px;
     cursor: pointer;
   }
+
+  .inputStar{
+    border-radius: 5px;
+    height: 20px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .selectAnunciante {
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  
+/*
+  not in 
+
+  O(1)
+
+  arreglo [         ,a]
+
+  string = 'aaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvvvvvvvvfffffffffffffffffff'
+  for letras in string
+    not in arreglo
+
+  size string es n
+  size arreglo m
+  O(n^2)
+*/
