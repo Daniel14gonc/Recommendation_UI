@@ -230,7 +230,7 @@ const Anunciante = ({nombre, index, onChange, change, edite, click, cambio}) =>{
             <Fragment>
                 <td><input type="text" defaultValue={nombre} style={{textAlign:'center'}} className={'inputStar'} onChange={(e) => onChange(e, index)} /></td> 
                 <td><button onClick={change} className='botonEdit' style={{backgroundColor:'rgb(81, 209, 8)'}}>Listo</button></td>
-                <td><button className='botonEliminar'>Eliminar</button></td>
+                <td><button className='botonEliminar' onClick={borrar}>Eliminar</button></td>
             </Fragment>
             }
         </tr>
@@ -241,6 +241,8 @@ const Anunciante = ({nombre, index, onChange, change, edite, click, cambio}) =>{
 const Anunciantes = ({anunciantes, change}) =>{
     const [edite, setEdite] = useState(anunciantes.map(() => false))
     const noms = useRef(anunciantes.map((elementos) => elementos.nombre))
+
+    const navigate = useNavigate()
 
     const clicki = (index) =>{
         const old = [...edite]
@@ -279,7 +281,7 @@ const Anunciantes = ({anunciantes, change}) =>{
         <div className='titulos'>
             <div className='Title'>
                 <h1>Anunciantes</h1>
-                <button>Crear nuevo</button>
+                <button onClick={()=> navigate('/newanunciante' )}>Crear nuevo</button>
             </div>
             <table>
                 <thead>
@@ -358,11 +360,13 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
 }
 
 const Anuncios = ({anuncios, anunciantes, change }) =>{
+
+    const navigate = useNavigate()
     return(
         <div className='titulos'>
             <div className='Title'>
                 <h1>Anuncios</h1>
-                <button>Crear nuevo</button>
+                <button onClick={()=> navigate('/newanuncio')}>Crear nuevo</button>
             </div>
             <table>
                 <thead>
@@ -388,7 +392,19 @@ const Anuncios = ({anuncios, anunciantes, change }) =>{
 }
 
 
-const Contenido = ({nombre}) =>{
+const Contenido = ({nombre, cambio}) =>{
+
+    const borrar = async() => {
+        const url = 'http://127.0.0.1:5000/api/contenido';
+        const response = await fetch(url, {
+          method:'DELETE',
+          headers:{
+            'nombre': nombre
+        }
+        })
+
+        cambio()
+    }
     
     
 
@@ -396,11 +412,11 @@ const Contenido = ({nombre}) =>{
         <tr>
             <td>{nombre}</td> 
             <td><button className='botonEdit'>Editar</button></td>
-            <td><button className='botonEliminar'>Eliminar</button></td>
+            <td><button className='botonEliminar' onClick={()=>borrar()}>Eliminar</button></td>
         </tr>
         )
 }
-const Contenidos = ({contenidos}) =>{
+const Contenidos = ({contenidos, cambio}) =>{
     const navigate = useNavigate()
     return(
         <div className='titulos'>
@@ -419,7 +435,7 @@ const Contenidos = ({contenidos}) =>{
                 <tbody>
                     {contenidos.map((elements) => {
                         return (
-                            <Contenido nombre={elements.nombre} />
+                            <Contenido nombre={elements.nombre} cambio = {cambio}/>
                         )
                     })}
                 </tbody>
@@ -573,7 +589,7 @@ const AdminHome = () => {
             <div className="adminBody">
                     {opciones[0] && <Cuentas cuentas={cuentas} setearcorreo={setearcorreo} change={() => setClikk(!clikk)}/>}
                     {opciones[1] && <Estrellas estrellas={estrellas} change={() => setClikk(!clikk)} />}
-                    {opciones[2] && <Contenidos contenidos={contenidos}/>}
+                    {opciones[2] && <Contenidos contenidos={contenidos} cambio={() => setClikk(!clikk)}/>}
                     {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
                     {opciones[4] && <Anunciantes anunciantes={anunciantes} change={() => setClikk(!clikk)}/> }
                 

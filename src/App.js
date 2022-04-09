@@ -8,7 +8,9 @@ import AdminCuenta from './routes/adminCuenta';
 import Pelicula from './routes/pelicula';
 import AdminLogin from './routes/adminLogin';
 import NewMovie from './routes/newMovies';
-
+import NewAnunciante from './routes/newAnunciante';
+import AdminHome from './routes/adminHome';
+import NewAnuncio from './routes/newAnuncio';
 
 import {
   BrowserRouter,
@@ -16,7 +18,8 @@ import {
   Route,
 } from "react-router-dom";
 import { useState } from 'react';
-import AdminHome from './routes/adminHome';
+
+
 
 function App() {
   return (
@@ -31,6 +34,8 @@ function App() {
         <Route path='/adminLogin' exact element ={<AdminLogin />}/>
         <Route path='/adminhome' exact element ={<AdminHome />}/>
         <Route path='/newmovie' exact element ={<NewMovie />}/>
+        <Route path='/newanunciante' exact element ={<NewAnunciante />}/>
+        <Route path='/newanuncio' exact element ={<NewAnuncio />}/>
       </Routes>
     </BrowserRouter>
   )
