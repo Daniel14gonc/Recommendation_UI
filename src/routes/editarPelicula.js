@@ -16,15 +16,13 @@ const ActorDropdown = ({ actores, change, i , director}) => {
 const EditMovie = () => {
     const navigate = useNavigate()
     const [directores, setDirectores] = useState([])
-    const datat = useRef([])
+    const [datat, setDatat] = useState({})
 
     const [clicked, setClicked] = useState(false)
 
     const data = useRef(['', '', '', '', ''])
 
-
-
-
+    
     const fetchDirectores = async () => {
         const url = 'http://127.0.0.1:5000/api/directores';
         const response = await fetch(url, {
@@ -35,8 +33,10 @@ const EditMovie = () => {
         return await responseJson
     }
 
-    const fetchMovies = async () => {
-        const url = 'http://127.0.0.1:5000/api/movie';
+    const fetchNuevito = async () => { 
+        data.current.push(window.sessionStorage.getItem('pelicula'))
+        console.log(data.current)
+        const url = 'http://127.0.0.1:5000/api/editPelis';
         const response = await fetch(url, {
             method:'PUT',
             headers:{
@@ -68,12 +68,17 @@ const EditMovie = () => {
             const response2 = await fetchDirectores()
             setDirectores(response2)
             const response = await fetchPeli()
-            datat.current = response
+            setDatat(response)
+            data.current[0] = window.sessionStorage.getItem('pelicula')
+            data.current[1] = response.nombre
+            data.current[2] = response.duracion
+            data.current[3] = response.link
+            data.current[4] = response.imagen
         })()
     }, [])
 
     const setDirector = (e, index=0) => {
-        data.current[2] = e.target.value
+        data.current[1] = e.target.value
     }
 
 
@@ -86,14 +91,14 @@ const EditMovie = () => {
                 <h1>Nombre</h1>
                 <input type='text' className='inputTF1' onChange={(e) => {data.current[0] = e.target.value}} defaultValue={window.sessionStorage.getItem('pelicula')}/>
                 <h1>Director</h1>
-                <ActorDropdown actores={directores} change={setDirector} director={'yo'}/>
+                <ActorDropdown actores={directores} change={setDirector} director={datat.nombre}/>
                 <h1>Duración</h1>
-                <input type='text' className='inputTF1' onChange={(e) => {data.current[3] = e.target.value}} defaultValue={'2'}/>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[2] = e.target.value}} defaultValue={datat.duracion}/>
                 <h1>Link</h1>
-                <input type='text' className='inputTF1' onChange={(e) => {data.current[4] = e.target.value}} defaultValue={'2'}/>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[3] = e.target.value}} defaultValue={datat.link}/>
                 <h1>Imagen</h1>
-                <input type='text' className='inputTF1' onChange={(e) => {data.current[5] = e.target.value}} defaultValue={'2'}/>
-                <button className='addPelicula' onClick={fetchMovies}>Confirmar Cambios</button>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[4] = e.target.value}} defaultValue={datat.imagen}/>
+                <button className='addPelicula' onClick={fetchNuevito}>Confirmar Cambios</button>
             </div>
         </div>
     )

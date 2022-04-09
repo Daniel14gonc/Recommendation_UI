@@ -58,18 +58,21 @@ const Cuenta = ({ correo, activo, setearcorreo, edita, onChangy, change, index, 
 }
 
 const Cuentas = ({ cuentas,setearcorreo, change}) => {
-    const [edita, setEdita] = useState(cuentas.map(() => false))
-    const corrs = useRef(cuentas.map((elementos) => elementos.correo))
+    const corrs = useRef([])
+    const [edita, setEdita] = useState(cuentas.map((element) => {corrs.current.push(element.correo); return false}))
+    
 
     const clicky = (index) =>{
         const viejo = [...edita]
         viejo[index] = true
         setEdita(viejo)
+        
     } 
 
 
     const handleChangy = (event, index) => {
         corrs.current[index] = event.target.value
+        
     }
 
     const cambiar = async (index, correo) => {
