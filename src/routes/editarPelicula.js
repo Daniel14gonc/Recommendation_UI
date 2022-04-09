@@ -2,11 +2,10 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './editarPelicula.css'
 
-const ActorDropdown = ({ actores, change, i }) => {
-    console.log(i)
+const ActorDropdown = ({ actores, change, i , director}) => {
     return (
         <select className='selectStar' onChange={(e) => change(e, i)} >
-            <option value="" selected disabled hidden>Eelegir opcion</option>
+            <option value="" selected disabled hidden>{director}</option>
             {actores.map(
                 (element) => <option value={element.nombre} >{element.nombre}</option>
             )}
@@ -17,12 +16,14 @@ const ActorDropdown = ({ actores, change, i }) => {
 const EditMovie = () => {
     const navigate = useNavigate()
     const [directores, setDirectores] = useState([])
+    const datat = useRef([])
 
     const [clicked, setClicked] = useState(false)
 
     const data = useRef(['', '', '', '', ''])
 
-    
+
+
 
     const fetchDirectores = async () => {
         const url = 'http://127.0.0.1:5000/api/directores';
@@ -51,9 +52,23 @@ const EditMovie = () => {
         return await responseJson
     }
 
+    const fetchPeli = async () =>{
+        const url = 'http://127.0.0.1:5000/api/editPelis'
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'nombre' : window.sessionStorage.getItem('pelicula')
+          }
+        })
+        const responseJson = await response.json()
+        return(responseJson)
+    }
+
     useEffect(() => { (async () => {
             const response2 = await fetchDirectores()
             setDirectores(response2)
+            const response = await fetchPeli()
+            datat.current = response
         })()
     }, [])
 
@@ -68,16 +83,16 @@ const EditMovie = () => {
                 <div onClick={() => navigate('/adminhome')}></div>
             </div>
             <div className='infoPeli'>
-                <h1>Título</h1>
-                <input type='text' className='inputTF' onChange={(e) => {data.current[0] = e.target.value}} />
+                <h1>Nombre</h1>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[0] = e.target.value}} defaultValue={window.sessionStorage.getItem('pelicula')}/>
                 <h1>Director</h1>
-                <ActorDropdown actores={directores} change={setDirector}/>
+                <ActorDropdown actores={directores} change={setDirector} director={'yo'}/>
                 <h1>Duración</h1>
-                <input type='text' className='inputTF' onChange={(e) => {data.current[3] = e.target.value}}/>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[3] = e.target.value}} defaultValue={'2'}/>
                 <h1>Link</h1>
-                <input type='text' className='inputTF' onChange={(e) => {data.current[4] = e.target.value}}/>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[4] = e.target.value}} defaultValue={'2'}/>
                 <h1>Imagen</h1>
-                <input type='text' className='inputTF' onChange={(e) => {data.current[5] = e.target.value}}/>
+                <input type='text' className='inputTF1' onChange={(e) => {data.current[5] = e.target.value}} defaultValue={'2'}/>
                 <button className='addPelicula' onClick={fetchMovies}>Confirmar Cambios</button>
             </div>
         </div>
