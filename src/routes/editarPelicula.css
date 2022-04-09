@@ -1,0 +1,63 @@
+.containerNew {
+  width: 100vw;
+  background: linear-gradient(to bottom, #020C1F 30%, #05183C);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 50px;
+}
+
+.infoPeli {
+  margin-left: 200px;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.infoPeli h1:nth-child(n){
+  color: white;
+  font-size: 20px;
+  width: 80%;
+  margin-top: 20px;
+}
+
+.inputTF {
+  width: 80%;
+  height: 35px;
+  border-radius: 10px;
+}
+
+.actCont {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.selectStar {
+  width: 30%;
+  height: 30px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.addActor {
+  width: 20%;
+  height: 30px;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid black;
+  background-color: #5ea3db;
+  cursor: pointer;
+}
+
+.addPelicula {
+  margin-top: 40px;
+  width: 25%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid black;
+  background-color: rgb(53, 129, 9);
+  cursor: pointer;
+}

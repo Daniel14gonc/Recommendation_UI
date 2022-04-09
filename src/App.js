@@ -18,6 +18,7 @@ import {
   Route,
 } from "react-router-dom";
 import { useState } from 'react';
+import EditMovie from './routes/editarPelicula';
 
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path='/newmovie' exact element ={<NewMovie />}/>
         <Route path='/newanunciante' exact element ={<NewAnunciante />}/>
         <Route path='/newanuncio' exact element ={<NewAnuncio />}/>
+        <Route path='/editPelicula' exact element={<EditMovie/>}/>
       </Routes>
     </BrowserRouter>
   )

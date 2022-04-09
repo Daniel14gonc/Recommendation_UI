@@ -393,6 +393,7 @@ const Anuncios = ({anuncios, anunciantes, change }) =>{
 
 
 const Contenido = ({nombre, cambio}) =>{
+    const navigate = useNavigate()
 
     const borrar = async() => {
         const url = 'http://127.0.0.1:5000/api/contenido';
@@ -411,7 +412,7 @@ const Contenido = ({nombre, cambio}) =>{
     return(
         <tr>
             <td>{nombre}</td> 
-            <td><button className='botonEdit'>Editar</button></td>
+            <td><button className='botonEdit' onClick={() =>{navigate('/editPelicula'); window.sessionStorage.setItem('pelicula', nombre)}}>Editar</button></td>
             <td><button className='botonEliminar' onClick={()=>borrar()}>Eliminar</button></td>
         </tr>
         )
