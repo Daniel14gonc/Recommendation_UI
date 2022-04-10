@@ -198,9 +198,10 @@
   }
 
 .reporte{
-  background-color: rgb(134, 130, 130);
+  background-color: rgb(224, 218, 218);
   width: 75%;
   margin-bottom: 15px;
+  border-radius: 10px;
 }
 .fechas{
   display: flex;

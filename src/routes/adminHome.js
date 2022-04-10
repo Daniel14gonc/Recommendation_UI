@@ -482,6 +482,7 @@ const Reportes = ({directo, acto, cant}) => {
     const [reprodb, setReprodb] = useState([])
     const [reproda, setReproda] = useState([])
     const [reprode, setReprode] = useState([])
+    const [hora, setHora] = useState(null)
     const fechaI = useRef(null)
     const fechaF = useRef(null)
 
@@ -541,12 +542,25 @@ const Reportes = ({directo, acto, cant}) => {
         setReproda(responseJson2)
     }
 
+    const fetchHora = async () => {
+        const url = 'http://127.0.0.1:5000/api/pico';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'fechaI' : fechaI.current,
+        }
+        })
+            
+        const responseJson = await response.json()
+        setHora(responseJson.hora)
+    }
+ 
 
 
     return(
         <div className='titulos'>
             <div className='reporte'>
-                <h1 style={{textAlign: 'center'}}>Top 10 de géneros de contenido más visto</h1>
+                <h2 style={{textAlign: 'center'}}>Top 10 de géneros de contenido más visto</h2>
                 <div className='fechas'>
                     <div className='fecha'>
                         <h3>Fecha de inicio</h3>
@@ -568,7 +582,7 @@ const Reportes = ({directo, acto, cant}) => {
                 </ul>
             </div>
             <div className='reporte'>
-                <h1 style={{textAlign: 'center'}}>Cantidad de reproducciones por cada categoría</h1>
+                <h2 style={{textAlign: 'center'}}>Cantidad de reproducciones por cada categoría</h2>
                 <div className='fechas'>
                     <div className='fecha'>
                         <h3>Fecha de inicio</h3>
@@ -603,7 +617,7 @@ const Reportes = ({directo, acto, cant}) => {
                 </ul>
             </div>
             <div className='reporte'>
-                <h1 style={{textAlign: 'center'}}>El top 10 de los directores y actores principales de las películas que los perfiles estándar y avanzados han visto.</h1>
+                <h2 style={{textAlign: 'center'}}>El top 10 de los directores y actores principales de las películas que los perfiles estándar y avanzados han visto.</h2>
                 
                 <ul style={{marginLeft: '5%'}}>
                 <h4>Directores</h4>
@@ -621,10 +635,25 @@ const Reportes = ({directo, acto, cant}) => {
                 </ul>
             </div>
             <div className='reporte'>
-                <h1 style={{textAlign: 'center'}}>La cantidad de cuentas avanzadas creadas en los últimos 6 meses.</h1>
+                <h2 style={{textAlign: 'center'}}>La cantidad de cuentas avanzadas creadas en los últimos 6 meses.</h2>
                 <ul style={{marginLeft: '5%'}}>
                 <h4>Cuentas</h4>
                    <li>{cant}</li>
+                </ul>
+            </div>
+
+            <div className='reporte'>
+                <h2 style={{textAlign: 'center'}}>Hora pico para fecha específica.</h2>
+                <ul style={{marginLeft: '5%'}}>
+                    <div className='fechas'>
+                        <div className='fecha'>
+                            <h3>Fecha de inicio</h3>
+                            <input type='date' className='inputTF' onChange={(e) => {fechaI.current = e.target.value}}/>
+                        </div>
+                        <button className='confir' onClick={fetchHora}>Confirmar fechas</button>
+                    </div>
+                    <h4>Hora pico</h4>
+                   <li>{hora} {hora && 'horas'}</li>
                 </ul>
             </div>
 
