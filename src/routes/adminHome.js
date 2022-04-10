@@ -31,6 +31,9 @@ const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
                 <div onClick={()=>opt('anunciantes')}>
                     Anunciantes 
                 </div>
+                <div onClick={()=>opt('reportes')}>
+                    Reportes 
+                </div>
 
             </div>
         </div>
@@ -450,6 +453,185 @@ const Contenidos = ({contenidos, cambio}) =>{
 
 }
 
+const ReporteGen = ({nombre, duracion})=>{
+    return(
+        <li>
+            {nombre} : {duracion} min
+        </li>
+    )
+}
+
+const Reportecuntas = ({nombre, cantidad})=>{
+    return(
+        <li>
+            {nombre} = {cantidad} 
+        </li>
+    )
+}
+
+const Reporte = ({nombre})=>{
+    return(
+        <li>
+            {nombre} 
+        </li>
+    )
+}
+
+const Reportes = ({directo, acto, cant}) => {
+    const [top10gen, setTop10gen] = useState([]) 
+    const [reprodb, setReprodb] = useState([])
+    const [reproda, setReproda] = useState([])
+    const [reprode, setReprode] = useState([])
+    const fechaI = useRef(null)
+    const fechaF = useRef(null)
+
+    
+    const fetchTop10gen = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Top10gen';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson = await response.json()
+        setTop10gen(responseJson)
+    }
+
+    const fetchReprodb = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Reprod';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'cuenta' : 'basica',
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson = await response.json()
+        setReprodb(responseJson)
+
+        const url1 = 'http://127.0.0.1:5000/api/Reprod';
+        const response1 = await fetch(url1, {
+          method:'GET',
+          headers: {
+            'cuenta' : 'estandar',
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson1 = await response1.json()
+        setReprode(responseJson1)
+
+        const url2 = 'http://127.0.0.1:5000/api/Reprod';
+        const response2 = await fetch(url2, {
+          method:'GET',
+          headers: {
+            'cuenta' : 'avanzada',
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson2 = await response2.json()
+        setReproda(responseJson2)
+    }
+
+
+
+    return(
+        <div className='titulos'>
+            <div className='reporte'>
+                <h1 style={{textAlign: 'center'}}>Top 10 de géneros de contenido más visto</h1>
+                <div className='fechas'>
+                    <div className='fecha'>
+                        <h3>Fecha de inicio</h3>
+                        <input type='date' className='inputTF' onChange={(e) => {fechaI.current = e.target.value}}/>
+                    </div>
+                    <div className='fecha'>
+                    <h3>Fecha de final</h3>
+                    <input type='date' className='inputTF' onChange={(e) => {fechaF.current = e.target.value}}/>
+                    </div>
+                    <button className='confir' onClick={fetchTop10gen}>Confirmar fechas</button>
+                </div>
+                
+                <ul style={{marginLeft: '5%'}}>
+                    {top10gen.map((elements) => {
+                            return (
+                                <ReporteGen nombre={elements.genero} duracion={elements.conteo}/>
+                            )
+                        })}
+                </ul>
+            </div>
+            <div className='reporte'>
+                <h1 style={{textAlign: 'center'}}>Cantidad de reproducciones por cada categoría</h1>
+                <div className='fechas'>
+                    <div className='fecha'>
+                        <h3>Fecha de inicio</h3>
+                        <input type='date' className='inputTF' onChange={(e) => {fechaI.current = e.target.value}}/>
+                    </div>
+                    <div className='fecha'>
+                    <h3>Fecha de final</h3>
+                    <input type='date' className='inputTF' onChange={(e) => {fechaF.current = e.target.value}}/>
+                    </div>
+                    <button className='confir' onClick={fetchReprodb}>Confirmar fechas</button>
+                </div>
+                
+                <ul style={{marginLeft: '5%'}}>
+                    <h4>Basica</h4>
+                    {reprodb.map((elements) => {
+                            return (
+                                <Reportecuntas nombre={elements.cuenta} cantidad={elements.conteo}/>
+                            )
+                        })}
+                        <h4>Estandar</h4>
+                    {reprode.map((elements) => {
+                        return (
+                            <Reportecuntas nombre={elements.cuenta} cantidad={elements.conteo}/>
+                        )
+                    })}
+                    <h4>Avanzada</h4>
+                    {reproda.map((elements) => {
+                        return (
+                            <Reportecuntas nombre={elements.cuenta} cantidad={elements.conteo}/>
+                        )
+                    })}
+                </ul>
+            </div>
+            <div className='reporte'>
+                <h1 style={{textAlign: 'center'}}>El top 10 de los directores y actores principales de las películas que los perfiles estándar y avanzados han visto.</h1>
+                
+                <ul style={{marginLeft: '5%'}}>
+                <h4>Directores</h4>
+                    {directo.map((elements) => {
+                            return (
+                                <Reporte nombre={elements.nombre}/>
+                            )
+                        })}
+                 <h4>Estrellas</h4>
+                    {acto.map((elements) => {
+                            return (
+                                <Reporte nombre={elements.nombre}/>
+                            )
+                        })}
+                </ul>
+            </div>
+            <div className='reporte'>
+                <h1 style={{textAlign: 'center'}}>La cantidad de cuentas avanzadas creadas en los últimos 6 meses.</h1>
+                <ul style={{marginLeft: '5%'}}>
+                <h4>Cuentas</h4>
+                   <li>{cant}</li>
+                </ul>
+            </div>
+
+        </div>
+        
+    )
+}
 
 const fetchEstrellas = async() =>{
     const url = 'http://127.0.0.1:5000/api/admin_getEstrellas';
@@ -522,14 +704,49 @@ const AdminHome = () => {
         return await responseJson
     }
 
+    const fetchDirecto = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Directo';
+        const response = await fetch(url, {
+          method:'GET',
+        })
+            
+        const responseJson = await response.json()
+        return(responseJson)
+    }
+
+    const fetchActo = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Acto';
+        const response = await fetch(url, {
+          method:'GET',
+        })
+            
+        const responseJson = await response.json()
+        return(responseJson)
+    }
+    const fetchCant = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Cant';
+        const response = await fetch(url, {
+          method:'GET',
+        })
+            
+        const responseJson = await response.json()
+        return(responseJson)
+    }
+
+
+
     const navigate = useNavigate()
     const [desp, setDesp] = useState(false)
-    const [opciones, setOpciones] = useState([true, false, false, false, false])
+    const [opciones, setOpciones] = useState([true, false, false, false, false, false])
     const [cuentas, setCuentas] = useState([])
     const [estrellas, setEstrellas] = useState([])
     const [contenidos, setContenidos] = useState([])
     const [anunciantes, setAnunciantes] = useState([])
     const [anuncios, setAnuncios] = useState([])
+    const [directo, setDirecto] = useState([])
+    const [acto, setActo] = useState([])
+    const [cant, setCant] = useState([])
+
     const [clikk, setClikk] = useState(false)
     const correo = useRef(null)
  
@@ -546,6 +763,12 @@ const AdminHome = () => {
         await setAnuncios(response3)
         const response4 = await fetchContenidos()
         await setContenidos(response4)
+        const response11 = await fetchDirecto()
+        await setDirecto(response11)
+        const response22 = await fetchActo()
+        await setActo(response22)
+        const response29 = await fetchCant()
+        await setCant(response29)
       } 
       admincito()
     }, [clikk])
@@ -568,19 +791,22 @@ const AdminHome = () => {
     const opt = (algo)=>{
 
         if(algo==='cuentas'){
-            setOpciones([true, false, false, false, false])
+            setOpciones([true, false, false, false, false, false])
         }
         else if(algo==='estrellas'){
-            setOpciones([false, true, false, false, false])
+            setOpciones([false, true, false, false, false, false])
         }
         else if(algo==='contenido'){
-            setOpciones([false, false, true, false, false])
+            setOpciones([false, false, true, false, false, false])
         }
         else if(algo==='anuncios'){
-            setOpciones([false, false, false, true, false])
+            setOpciones([false, false, false, true, false, false])
         }
         else if(algo==='anunciantes'){
-            setOpciones([false, false, false, false, true])
+            setOpciones([false, false, false, false, true, false])
+        }
+        else if(algo==='reportes'){
+            setOpciones([false, false, false, false, false, true])
         }
         setClikk(!clikk)
 
@@ -596,6 +822,7 @@ const AdminHome = () => {
                     {opciones[2] && <Contenidos contenidos={contenidos} cambio={() => setClikk(!clikk)}/>}
                     {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
                     {opciones[4] && <Anunciantes anunciantes={anunciantes} change={() => setClikk(!clikk)}/> }
+                    {opciones[5] && <Reportes directo={directo} acto={acto} cant={cant}/> }
                 
             </div>
         </div>

@@ -197,19 +197,27 @@
     text-align: center;
   }
 
-  
-/*
-  not in 
-
-  O(1)
-
-  arreglo [         ,a]
-
-  string = 'aaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvvvvvvvvfffffffffffffffffff'
-  for letras in string
-    not in arreglo
-
-  size string es n
-  size arreglo m
-  O(n^2)
-*/
+.reporte{
+  background-color: rgb(134, 130, 130);
+  width: 75%;
+  margin-bottom: 15px;
+}
+.fechas{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.fecha{
+  margin-right: 50px;
+  display: flex;
+  flex-direction: column;
+}
+.confir{
+  margin-top: 40px;
+  width: 20%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid black;
+  background-color: rgb(53, 129, 9);
+  cursor: pointer;
+}
