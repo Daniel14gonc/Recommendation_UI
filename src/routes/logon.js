@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './logon.css'
+import md5 from 'md5'
 const url = 'http://127.0.0.1:5000/api/logon';
 
 const Logon = () => {
@@ -37,11 +38,11 @@ const Logon = () => {
   }
 
   const handleContra = (event) =>{
-    setContra(event.target.value)
+    setContra(md5(event.target.value))
   }
 
   const handleConf = (event) => {
-    setConf(event.target.value)
+    setConf(md5(event.target.value))
   }
   
   const handleRadio = (event) => {

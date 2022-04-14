@@ -2,6 +2,7 @@ import './login.css'
 import { createBrowserHistory as history} from 'history';
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react';
+import md5 from 'md5'
 
 const url = 'http://127.0.0.1:5000/api/signin';
 
@@ -17,6 +18,7 @@ const Login = () => {
   const[correo, setCorreo] = useState(null)
   const[password, setPassword] = useState(null)
   const [valido, setValido] = useState(true)
+  const [contador, setContador] = useState(0)
 
   const navigate = useNavigate()
   const ir = (ruta) => {
@@ -29,7 +31,7 @@ const Login = () => {
   }
 
   const getPassword = (event) => {
-    setPassword(event.target.value);
+    setPassword(md5(event.target.value));
   }
 
   const validarRegistro = async() => {
@@ -44,6 +46,7 @@ const Login = () => {
     const responseJson = await response.json()
     if (responseJson['message'].includes('error')){
       setValido(false)
+      setContador(contador+1)
     }
     else{
       const use = {
@@ -82,7 +85,7 @@ const Login = () => {
             <input className = "correo" placeholder="Correo Electronico" onChange ={getCorreo} />
             <input type='password' className = "contrasena" placeholder="Contraseña" onChange ={getPassword} />
             <div className='errorContainer'>
-              <p className = "errorMessage">{!valido ? 'Datos inválidos. Intenta de nuevo.' : ''}</p>
+              <p className = "errorMessage">{!valido ? `Datos inválidos. Intentidos fallidos: ${contador} ` : ''}</p>
             </div>
           </div>
           <div className='button-container'>
