@@ -24,7 +24,7 @@ const AdminCuenta = () => {
   
 
   const fetchNuevoTipo = async() =>{
-    fetch(url, {
+    await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type':'application/json'

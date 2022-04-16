@@ -10,7 +10,7 @@ const fetchSugerido = async() =>{
   const response = await fetch(url, {
     method:'GET',
     headers: {
-      'id' : window.sessionStorage.getItem('idperfil')
+      'id' : JSON.parse(window.sessionStorage.getItem('perfil')).id
     }
   })
       
