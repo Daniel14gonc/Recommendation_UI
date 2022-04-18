@@ -332,7 +332,7 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
         })
             
         const responseJson = await response.json()
-        change()
+        changes()
         return await responseJson
     }
 
