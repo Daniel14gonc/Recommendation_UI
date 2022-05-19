@@ -14,6 +14,7 @@ const ActorDropdown = ({ actores, change, i , director}) => {
 }
 
 const EditMovie = () => {
+    const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
     const navigate = useNavigate()
     const [directores, setDirectores] = useState([])
     const [datat, setDatat] = useState({})
@@ -43,7 +44,8 @@ const EditMovie = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                data : data.current
+                data : data.current,
+                admin: admin
             })
         })
 

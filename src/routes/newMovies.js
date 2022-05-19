@@ -58,6 +58,7 @@ const NewMovie = () => {
 
     const fetchMovies = async () => {
         data.current[6] = act.current
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/movie';
         const response = await fetch(url, {
             method:'POST',
@@ -65,7 +66,8 @@ const NewMovie = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                data : data.current
+                data : data.current,
+                admin: admin
             })
         })
 

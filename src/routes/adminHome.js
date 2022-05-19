@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './adminHome.css'
+import Simulacion from './simulacion'
 
 
 const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
@@ -35,6 +36,9 @@ const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
                 </div>
                 <div onClick={()=>opt('reportes')}>
                     Reportes 
+                </div>
+                <div onClick={()=>opt('simulacion')}>
+                    Simulacion 
                 </div>
 
             </div>
@@ -165,6 +169,7 @@ const Estrellas = ({ estrellas, change }) =>{
     }
 
     const listo = async (index, id) => {
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/stars';
         const response = await fetch(url, {
           method:'PUT',
@@ -173,7 +178,8 @@ const Estrellas = ({ estrellas, change }) =>{
           },
           body : JSON.stringify({
             nombre : star.current[index],
-            id : id
+            id : id,
+            admin: admin
           })
         })
        const old = [...edit]
@@ -222,8 +228,9 @@ const Anunciante = ({nombre, index, onChange, change, edite, click, cambio}) =>{
         const response = await fetch(url, {
           method:'DELETE',
           headers:{
-            'nombre': nombre
-        }
+            'nombre': nombre,
+            'administrador': JSON.parse(window.sessionStorage.getItem('user')).correo,
+          }
         })
 
         cambio()
@@ -262,6 +269,7 @@ const Anunciantes = ({anunciantes, change}) =>{
 
     const cambia = async (index, nombre) => {
         const url = 'http://127.0.0.1:5000/api/anunciante';
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const response = await fetch(url, {
           method:'PUT',
           headers: {
@@ -269,7 +277,8 @@ const Anunciantes = ({anunciantes, change}) =>{
           },
           body : JSON.stringify({
             new : noms.current[index],
-            old : nombre
+            old : nombre,
+            admin: admin
           })
         })
        const old = [...edite]
@@ -323,6 +332,7 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
     }
 
     const onClick = async() => {
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/anuncios';
         const response = await fetch(url, {
           method:'PUT',
@@ -331,7 +341,8 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
           },
           body: JSON.stringify({
               id : id,
-              anunciante: anun.current
+              anunciante: anun.current,
+              admin: admin
           })
         })
             
@@ -345,7 +356,8 @@ const Anuncio = ({ id, anunciantes, anunciante, changes }) =>{
         const response = await fetch(url, {
           method:'DELETE',
           headers:{
-              'id': id
+              'id': id,
+              'administrador': JSON.parse(window.sessionStorage.getItem('user')).correo
           }
         })
 
@@ -410,7 +422,8 @@ const Contenido = ({nombre, cambio}) =>{
         const response = await fetch(url, {
           method:'DELETE',
           headers:{
-            'nombre': nombre
+            'nombre': nombre,
+            'administrador': JSON.parse(sessionStorage.getItem('user')).correo
         }
         })
 
@@ -772,7 +785,7 @@ const AdminHome = () => {
 
     const navigate = useNavigate()
     const [desp, setDesp] = useState(false)
-    const [opciones, setOpciones] = useState([true, false, false, false, false, false])
+    const [opciones, setOpciones] = useState([true, false, false, false, false, false, false])
     const [cuentas, setCuentas] = useState([])
     const [estrellas, setEstrellas] = useState([])
     const [contenidos, setContenidos] = useState([])
@@ -826,22 +839,25 @@ const AdminHome = () => {
     const opt = (algo)=>{
 
         if(algo==='cuentas'){
-            setOpciones([true, false, false, false, false, false])
+            setOpciones([true, false, false, false, false, false, false])
         }
         else if(algo==='estrellas'){
-            setOpciones([false, true, false, false, false, false])
+            setOpciones([false, true, false, false, false, false, false])
         }
         else if(algo==='contenido'){
-            setOpciones([false, false, true, false, false, false])
+            setOpciones([false, false, true, false, false, false, false])
         }
         else if(algo==='anuncios'){
-            setOpciones([false, false, false, true, false, false])
+            setOpciones([false, false, false, true, false, false, false])
         }
         else if(algo==='anunciantes'){
-            setOpciones([false, false, false, false, true, false])
+            setOpciones([false, false, false, false, true, false, false])
         }
         else if(algo==='reportes'){
-            setOpciones([false, false, false, false, false, true])
+            setOpciones([false, false, false, false, false, true, false])
+        }
+        else if(algo==='simulacion'){
+            setOpciones([false, false, false, false, false, false, true])
         }
         setClikk(!clikk)
 
@@ -858,7 +874,7 @@ const AdminHome = () => {
                     {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
                     {opciones[4] && <Anunciantes anunciantes={anunciantes} change={() => setClikk(!clikk)}/> }
                     {opciones[5] && <Reportes directo={directo} acto={acto} cant={cant}/> }
-                
+                    {opciones[6] && <Simulacion directo={directo} acto={acto} cant={cant}/> }
             </div>
         </div>
     )

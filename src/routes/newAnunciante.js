@@ -10,6 +10,7 @@ const NewAnunciante = () => {
 
 
     const fetchAnunciantess = async () => {
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/anunciantes';
         const response = await fetch(url, {
             method:'POST',
@@ -17,7 +18,8 @@ const NewAnunciante = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                data : condata.current
+                data : condata.current,
+                admin: admin
             })
         })
 

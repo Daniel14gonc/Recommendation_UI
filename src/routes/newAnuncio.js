@@ -23,6 +23,7 @@ const NewAnuncio = () => {
     }
 
     const fetchAnuncio = async () => {
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/anuncio';
         const response = await fetch(url, {
             method:'POST',
@@ -31,7 +32,8 @@ const NewAnuncio = () => {
             },
             body: JSON.stringify({
                 link : condata.current,
-                anunciante : anun.current
+                anunciante : anun.current,
+                admin: admin
             })
         })
 
