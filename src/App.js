@@ -11,6 +11,7 @@ import NewMovie from './routes/newMovies';
 import NewAnunciante from './routes/newAnunciante';
 import AdminHome from './routes/adminHome';
 import NewAnuncio from './routes/newAnuncio';
+import NewAdimn from './routes/newAdmin';
 
 import {
   BrowserRouter,
@@ -38,6 +39,7 @@ function App() {
         <Route path='/newanunciante' exact element ={<NewAnunciante />}/>
         <Route path='/newanuncio' exact element ={<NewAnuncio />}/>
         <Route path='/editPelicula' exact element={<EditMovie/>}/>
+        <Route path='/newAdmin' exact element={<NewAdimn />}/>
       </Routes>
     </BrowserRouter>
   )

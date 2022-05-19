@@ -4,13 +4,15 @@ import './adminHome.css'
 
 
 const Header = ({onChange, desp, Cerrarsesion, opt}) =>{
+    const navigate = useNavigate()
     return(
         <div className='adminHeader'>
             <div style={{marginRight:'10px', display:'flex', justifyContent:'center', alignItems:'center'}}>
                 <div  className='adminbubble' onClick={onChange}></div>
                 {desp && 
                 <div className='admindropdown'>
-                    <div className='adminswitch' style={{color:'#4e91dd'}}>Admin</div>
+                    <div className='adminswitch' style={{color:'#4e91dd'}} >{JSON.parse(window.sessionStorage.getItem('user')).correo}</div>
+                    <div className='adminswitch' style={{color:'#4e91dd'}}    onClick={() => {navigate('/newAdmin')}} >Crear administrador</div>
                     <div style={{color:'red'}} className='adminswitch' onClick={Cerrarsesion}>Cerrar sesión</div>
                 </div>
                 }
@@ -79,6 +81,7 @@ const Cuentas = ({ cuentas,setearcorreo, change}) => {
     }
 
     const cambiar = async (index, correo) => {
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const url = 'http://127.0.0.1:5000/api/cuentas';
         const response = await fetch(url, {
           method:'PUT',
@@ -87,7 +90,8 @@ const Cuentas = ({ cuentas,setearcorreo, change}) => {
           },
           body : JSON.stringify({
             new : corrs.current[index],
-            old : correo
+            old : correo,
+            admin: admin
           })
         })
        const viejin = [...edita]
@@ -718,13 +722,15 @@ const AdminHome = () => {
 
     const fetchActivado = async(a) =>{
         const url = 'http://127.0.0.1:5000/api/admin_Activado';
+        const admin = JSON.parse(window.sessionStorage.getItem('user')).correo
         const response = await fetch(url, {
           method:'PUT',
           headers:{
               'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-              'correo': correo.current
+              'correo': correo.current,
+              admin: admin
           })
         })
             
