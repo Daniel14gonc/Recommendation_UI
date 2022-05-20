@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './simulacion.css'
 
-const Simulacion = ({directo, acto, cant}) => {
+const Simulacion = ({}) => {
     const fecha = useRef(null)
     const cantidad = useRef(null)
     const [error, setError] = useState('')

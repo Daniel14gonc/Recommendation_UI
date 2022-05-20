@@ -327,6 +327,7 @@ const Home = () =>{
     if(event.key === 'Enter'){
       console.log(event.key)
       const url = 'http://127.0.0.1:5000/api/contenido'
+      const url1 = 'http://127.0.0.1:5000/api/busqueda'
       const response = await fetch(url, {
         method:'GET',
         headers: {
@@ -340,6 +341,15 @@ const Home = () =>{
       })
       const responseJson = await response.json()
       setSearchResult(responseJson)
+      await fetch(url1, {
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'busqueda': text
+        })
+      })
     }
   }
 

@@ -494,8 +494,10 @@ const Reporte = ({nombre})=>{
     )
 }
 
-const Reportes = ({directo, acto, cant}) => {
+const Reportes = ({directo, acto, cant, busq}) => {
     const [top10gen, setTop10gen] = useState([]) 
+    const [top5admin, setTop5admin] = useState([]) 
+    const [sinTermin, setSintermin] = useState([]) 
     const [reprodb, setReprodb] = useState([])
     const [reproda, setReproda] = useState([])
     const [reprode, setReprode] = useState([])
@@ -570,6 +572,34 @@ const Reportes = ({directo, acto, cant}) => {
             
         const responseJson = await response.json()
         setHora(responseJson.hora)
+    }
+
+    const fetchTop5admin = async() =>{
+        const url = 'http://127.0.0.1:5000/api/top_5_admin';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson = await response.json()
+        setTop5admin(responseJson)
+    }
+
+    const fetchsinTerminar = async() =>{
+        const url = 'http://127.0.0.1:5000/api/sinTerminar';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'fechaI' : fechaI.current,
+            'fechaF': fechaF.current
+        }
+        })
+            
+        const responseJson = await response.json()
+        setSintermin(responseJson)
     }
  
 
@@ -673,6 +703,69 @@ const Reportes = ({directo, acto, cant}) => {
                    <li>{hora} {hora && 'horas'}</li>
                 </ul>
             </div>
+
+            <h2 style={{textAlign: 'center', color:'white'}}>REPORTES PROYECTO 3</h2>
+
+            <div className='reporte'>
+                <h2 style={{textAlign: 'center'}}>PENDIENTE</h2>
+                
+            </div>
+            <div className='reporte'>
+                <h2 style={{textAlign: 'center'}}>Top 10 busquedas por usuarios</h2>
+                
+                <ol style={{marginLeft: '5%'    }}>
+                    {busq.map((elements) => {
+                                return (
+                                    <Reporte nombre={elements.termino} />
+                                )
+                            })}
+                </ol>
+            </div>
+            <div className='reporte'>
+                <h2 style={{textAlign: 'center'}}>Top 5 administradores con mas modificaciones a usuarios</h2>
+                <div className='fechas'>
+                    <div className='fecha'>
+                        <h3>Fecha de inicio</h3>
+                        <input type='date' className='inputTF' onChange={(e) => {fechaI.current = e.target.value}}/>
+                    </div>
+                    <div className='fecha'>
+                    <h3>Fecha de final</h3>
+                    <input type='date' className='inputTF' onChange={(e) => {fechaF.current = e.target.value}}/>
+                    </div>
+                    <button className='confir' onClick={fetchTop5admin}>Confirmar fechas</button>
+                </div>
+                
+                <ol style={{marginLeft: '5%'}}>
+                    {top5admin.map((elements) => {
+                            return (
+                                <Reporte nombre={elements.nombre} />
+                            )
+                        })}
+                </ol>
+            </div>
+            <div className='reporte'>
+                <h2 style={{textAlign: 'center'}}>Top 20 peliculas que comenzaron  a  verse  pero  que  llevan  más  de  20  días  sin finalizarse </h2>
+                <div className='fechas'>
+                    <div className='fecha'>
+                        <h3>Fecha de inicio</h3>
+                        <input type='date' className='inputTF' onChange={(e) => {fechaI.current = e.target.value}}/>
+                    </div>
+                    <div className='fecha'>
+                    <h3>Fecha de final</h3>
+                    <input type='date' className='inputTF' onChange={(e) => {fechaF.current = e.target.value}}/>
+                    </div>
+                    <button className='confir' onClick={fetchsinTerminar}>Confirmar fechas</button>
+                </div>
+                
+                <ul style={{marginLeft: '5%'}}>
+                    {sinTermin.map((elements) => {
+                            return (
+                                <Reporte nombre={elements.nombre} />
+                            )
+                        })}
+                </ul>
+            </div>
+
 
         </div>
         
@@ -780,6 +873,15 @@ const AdminHome = () => {
         const responseJson = await response.json()
         return(responseJson)
     }
+    const fetchBusqueda = async() =>{
+        const url = 'http://127.0.0.1:5000/api/busqueda';
+        const response = await fetch(url, {
+          method:'GET',
+        })
+            
+        const responseJson = await response.json()
+        return(responseJson)
+    }
 
 
 
@@ -794,6 +896,7 @@ const AdminHome = () => {
     const [directo, setDirecto] = useState([])
     const [acto, setActo] = useState([])
     const [cant, setCant] = useState([])
+    const [busq, setBusq] = useState([])
 
     const [clikk, setClikk] = useState(false)
     const correo = useRef(null)
@@ -817,6 +920,8 @@ const AdminHome = () => {
         await setActo(response22)
         const response29 = await fetchCant()
         await setCant(response29)
+        const response299 = await fetchBusqueda()
+        await setBusq(response299)
       } 
       admincito()
     }, [clikk])
@@ -873,8 +978,8 @@ const AdminHome = () => {
                     {opciones[2] && <Contenidos contenidos={contenidos} cambio={() => setClikk(!clikk)}/>}
                     {opciones[3] && <Anuncios anuncios={anuncios} anunciantes={anunciantes} change={() => setClikk(!clikk)} />}
                     {opciones[4] && <Anunciantes anunciantes={anunciantes} change={() => setClikk(!clikk)}/> }
-                    {opciones[5] && <Reportes directo={directo} acto={acto} cant={cant}/> }
-                    {opciones[6] && <Simulacion directo={directo} acto={acto} cant={cant}/> }
+                    {opciones[5] && <Reportes directo={directo} acto={acto} cant={cant} busq={busq}/> }
+                    {opciones[6] && <Simulacion /> }
             </div>
         </div>
     )
