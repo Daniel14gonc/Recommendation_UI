@@ -494,14 +494,25 @@ const Reporte = ({nombre})=>{
     )
 }
 
+const ReportePormes = ({hora, nombre})=>{
+    return(
+        <li>
+            {hora} horas - {nombre} 
+        </li>
+    )
+}
+
 const Reportes = ({directo, acto, cant, busq}) => {
-    const [top10gen, setTop10gen] = useState([]) 
+    const [top10gen, setTop10gen] = useState([])
+    const [pormes, setPormes] = useState([])
+    const mes = useRef('')
     const [top5admin, setTop5admin] = useState([]) 
     const [sinTermin, setSintermin] = useState([]) 
     const [reprodb, setReprodb] = useState([])
     const [reproda, setReproda] = useState([])
     const [reprode, setReprode] = useState([])
     const [hora, setHora] = useState(null)
+    const meses = ['Enero', 'Febrero', 'Marzo' , 'Abril' , 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     const fechaI = useRef(null)
     const fechaF = useRef(null)
 
@@ -600,6 +611,19 @@ const Reportes = ({directo, acto, cant, busq}) => {
             
         const responseJson = await response.json()
         setSintermin(responseJson)
+    }
+    
+    const fetchPormes = async() =>{
+        const url = 'http://127.0.0.1:5000/api/Pormes';
+        const response = await fetch(url, {
+          method:'GET',
+          headers: {
+            'mes' : mes.current,
+        }
+        })
+            
+        const responseJson = await response.json()
+        setPormes(responseJson)
     }
  
 
@@ -707,8 +731,27 @@ const Reportes = ({directo, acto, cant, busq}) => {
             <h2 style={{textAlign: 'center', color:'white'}}>REPORTES PROYECTO 3</h2>
 
             <div className='reporte'>
-                <h2 style={{textAlign: 'center'}}>PENDIENTE</h2>
+                <h2 style={{textAlign: 'center'}}> El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado.</h2>
+                <div className='fechas'>
+                    <div className='fecha'>
+                        <h3>Indicar mes</h3>
+                        <select className='selectAnunciante' onChange={(e) =>{mes.current = e.target.value}}>
+                            <option value="" selected disabled hidden>{'Mes'}</option>
+                                {meses.map(
+                                    (element, index) => <option value={index+1}>{element}</option>
+                                )}
+                        </select>
+                    </div>
+                    <button className='confir' onClick={fetchPormes}>Confirmar mes</button>
+                </div>
                 
+                <ul style={{marginLeft: '5%'}}>
+                    {pormes.map((elements) => {
+                            return (
+                                <ReportePormes hora={elements.hora} nombre={elements.nombre} />
+                            )
+                        })}
+                </ul>
             </div>
             <div className='reporte'>
                 <h2 style={{textAlign: 'center'}}>Top 10 busquedas por usuarios</h2>
