@@ -39,6 +39,9 @@ const NewAdimn = () => {
                 setSuccess('Has creado al nuevo administrador.')
                 setAdmin('')
                 setPass('')
+                setTimeout(() => {
+                    navigate('/adminHome')
+                }, 2000)
             }
         } else {
             setError('Ingresa todos los datos.')
